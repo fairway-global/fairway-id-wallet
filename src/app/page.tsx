@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/button"
+import {Button} from '@nextui-org/button'; 
 
 export default function Home() {
   return (
@@ -20,10 +20,13 @@ export default function Home() {
           priority
         />
       </div>
-      <div className="bg-[#3F5A69]">
-        <p>Welcome to Fairway Wallet</p>
-        <p>Its secure and support managing credentials</p>
-        <Button colorPalette={'orange'} >Click me</Button>
+      <div className="bg-[#3F5A69] p-8 flex flex-col gap-2 text-white">
+        <p className={'text-3xl '}>Welcome to Fairway Wallet</p>
+        <p className={'font-thin italic'}>Its secure and support managing credentials</p>
+        <Button color="warning" className={'flex justify-between w-full max-w-96'}>
+            <span>CREATE A NEW WALLET</span>
+            <span>&#8594;</span>
+        </Button>
       </div>
     </div>
   );
