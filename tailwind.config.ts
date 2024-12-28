@@ -13,6 +13,7 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        fwNewGreen: "#68D3AC"
       },
     },
   },
