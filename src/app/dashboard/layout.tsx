@@ -13,8 +13,6 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-
-  // Determine the active tab based on the current route
   const activeTab = pathname.split("/").pop() || "credentials";
 
   const handleTabChange = (key: string) => {
@@ -22,16 +20,11 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="bg-black min-h-screen flex flex-col">
-      {/* Header */}
-      {/* <header className="h-16 bg-gray-900 text-white flex items-center justify-center">
-        <h1 className="text-xl font-bold">Dashboard</h1>
-      </header> */}
+    <div className="bg-black h-screen grid grid-rows-[64px_1fr_56px]">
       <Header />
 
       {/* Dynamic Content */}
-      <main className="flex-grow p-4 ">{children}</main>
-
+      <main className="p-4 overflow-y-auto">{children}</main>
       {/* Tabs at the Bottom */}
       <Tabs
         aria-label="Dashboard Navigation"

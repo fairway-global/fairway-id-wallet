@@ -12,6 +12,8 @@ export default function Header() {
     "/dashboard": "Credentials",
     "/dashboard/scan": "Scan",
     "/dashboard/settings": "Settings",
+    "/dashboard/credentials/verifyId/": "Verify Id",
+    "/dashboard/credentials/verificationResult/": "Verify Id",
   };
 
   const title = titles[pathname] || "Dashboard";

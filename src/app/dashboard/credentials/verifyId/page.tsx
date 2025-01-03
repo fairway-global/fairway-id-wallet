@@ -5,18 +5,15 @@ import { Input } from "@nextui-org/react";
 import { DatePicker } from "@nextui-org/react";
 import { FormEvent, useState } from "react";
 import { Button } from "@nextui-org/button";
-import { useDateFormatter } from "@react-aria/i18n";
-import { getLocalTimeZone } from "@internationalized/date";
 import { PencilIcon } from "@heroicons/react/24/outline";
-import IDVerificationResult from "@/app/dashboard/credentials/verificationResult/page";
+import IDVerificationResult from "@/components/IdVerificationResult";
+import dayjs from "dayjs";
 
 export default function VerifyId() {
-  const [editingMode, setEditingMode] = useState(true);
+  const [editingMode, setEditingMode] = useState(false);
 
-  const [fullName, setFullName] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-
-  let formatter = useDateFormatter();
+  const [fullName, setFullName] = useState("Biniam Beyene Bayisa");
+  const [birthDate, setBirthDate] = useState(dayjs());
 
   const onSave = (e: FormEvent) => {
     e.preventDefault();
@@ -25,7 +22,12 @@ export default function VerifyId() {
 
   const EditIcon = () => (
     <PencilIcon
-      onClick={() => setEditingMode(true)}
+      onClick={(e: any) => {
+        console.log("clicked edit...");
+        e.preventDefault();
+        e.stopPropagation();
+        setEditingMode(true);
+      }}
       className="h-3 w-3 text-white"
     />
   );
@@ -59,6 +61,7 @@ export default function VerifyId() {
               name={"birthDate"}
               className="w-full"
               label="Birth date"
+              value={dayjs()}
               onChange={(value: any) => setBirthDate(value)}
             />
           </>
@@ -78,7 +81,7 @@ export default function VerifyId() {
               </span>
             </p>
             <p className="text-fwNewGreen">
-              {formatter.format(birthDate.toDate(getLocalTimeZone()))}
+              {dayjs(birthDate).format("YYYY-MM-DD")}
             </p>
           </div>
         )}
