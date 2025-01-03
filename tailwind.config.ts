@@ -13,7 +13,9 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        fwNewGreen: "#68D3AC"
+        fwNewGreen: "#68D3AC",
+        fwOrange: '#FDB82C',
+        fwNewRed: '#D91F05'
       },
     },
   },
