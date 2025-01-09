@@ -3,20 +3,11 @@
 import { usePathname } from "next/navigation";
 import { BellIcon } from "@heroicons/react/24/outline";
 import { Avatar } from "@nextui-org/react";
+import usePageTitles from "@/utils/usePageTitles";
 
 export default function Header() {
   const pathname = usePathname();
-
-  // Map routes to dynamic titles
-  const titles: { [key: string]: string } = {
-    "/dashboard": "Credentials",
-    "/dashboard/scan": "Scan",
-    "/dashboard/settings": "Settings",
-    "/dashboard/credentials/verifyId/": "Verify Id",
-    "/dashboard/credentials/verificationResult/": "Verify Id",
-  };
-
-  const title = titles[pathname] || "Dashboard";
+  const title = usePageTitles(pathname);
 
   return (
     <div className="p-4 flex flex-row justify-between items-center h-16 bg-transparent text-white">
