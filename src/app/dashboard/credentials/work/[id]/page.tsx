@@ -3,7 +3,6 @@
 import WorkCredential from "@/components/WorkCredential";
 import { IWorkCredential } from "@/utils/types";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import Image from "next/image";
 import {
   FingerPrintIcon,
@@ -14,16 +13,13 @@ import {
 import { Button } from "@nextui-org/button";
 
 export default function WorkCredentialDetail() {
-  const params = useParams();
   const [workCredential, setWorkCredential] = useState<IWorkCredential>(
     {} as IWorkCredential
   );
 
   useEffect(() => {
-    // Get WorkCrednetial from ID:
-    const { id } = params;
     const work: IWorkCredential = {
-      id: 234,
+      id: 24,
       title: "Junior Accountant",
       companyName: "ABZ Technologies",
       issuedDate: "21/02/2024",

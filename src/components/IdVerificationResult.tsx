@@ -10,10 +10,10 @@ import { useState } from "react";
 import { Button } from "@nextui-org/button";
 
 const IDVerificationResult = () => {
-  const [isSuccessful, setIsSuccessful] = useState(true);
-  const [fullName, setFullName] = useState("Biniam Beyene Bayisa");
-  const [birthDate, setBirthDate] = useState("09/10/1992");
-  const [fcn, setFCN] = useState("2345 6780 9764 3145");
+  const [isSuccessful] = useState(true);
+  const [fullName] = useState("Biniam Beyene Bayisa");
+  const [birthDate] = useState("09/10/1992");
+  const [fcn] = useState("2345 6780 9764 3145");
 
   const onEditDetails = () => {
     console.log("on Edit clicked");

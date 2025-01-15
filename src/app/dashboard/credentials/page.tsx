@@ -11,9 +11,9 @@ import WorkCredential from "@/components/WorkCredential";
 import EducationCredential from "@/components/EducationCredential";
 
 export default function Credentials() {
-  const [isIdentityVerified, setIsIDentityVerified] = useState(true);
-  const [educationVerified, setEducationVerified] = useState(true);
-  const [fullName, setFullName] = useState("Biniam Beyene Bayisa");
+  const [isIdentityVerified] = useState(true);
+  const [educationVerified] = useState(true);
+  const [fullName] = useState("Biniam Beyene Bayisa");
   const [educationCredentials, setEducationCredentials] = useState<
     IEducationCredential[]
   >([]);

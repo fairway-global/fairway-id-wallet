@@ -1,21 +1,21 @@
 "use client";
-import React from "react";
+import React, { Key } from "react";
 import { Tabs, Tab } from "@nextui-org/react";
 import { CameraIcon, ChartPieIcon, CogIcon } from "@heroicons/react/24/outline";
 import { useTabs } from "@/context/TabsContext";
-import Credentials from "../tabs/Credentials";
-import Scan from "../tabs/Scan";
-import Settings from "../tabs/Settings";
+import Credentials from "@/app/dashboard/page";
+import Scan from "@/app/dashboard/scan/page";
+import Settings from "@/app/dashboard/settings/page";
 
 const AppTabs: React.FC = () => {
-  const { activeTab, setActiveTab } = useTabs();
+  const { activeTab } = useTabs();
 
   return (
     <div className="flex w-full flex-col-reverse">
       <Tabs
         aria-label="App Navigation"
         selectedKey={activeTab}
-        onSelectionChange={(key: string) => console.log("key", key)}
+        onSelectionChange={(key: Key) => console.log("key", key as string)}
         className="rounded-full backdrop-blur-lg bg-white/10 p-2 shadow-lg w-full mt-auto mb-0"
         variant="solid"
         fullWidth={true}

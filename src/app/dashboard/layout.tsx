@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Key } from "react";
 import { Tabs, Tab } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import { CameraIcon, ChartPieIcon, CogIcon } from "@heroicons/react/24/outline";
@@ -29,7 +29,7 @@ export default function DashboardLayout({
       <Tabs
         aria-label="Dashboard Navigation"
         selectedKey={activeTab}
-        onSelectionChange={(key: string) => handleTabChange(key)}
+        onSelectionChange={(key: Key) => handleTabChange(key as string)}
         className="rounded-full backdrop-blur-lg bg-white/10 p-2 shadow-lg w-full fixed bottom-4 left-1/2 transform -translate-x-1/2 max-w-xl"
         variant="solid"
         fullWidth={true}

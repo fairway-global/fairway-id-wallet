@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter, useHi } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { BellIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { Avatar } from "@nextui-org/react";
 import usePageTitles from "@/utils/usePageTitles";
@@ -8,14 +8,11 @@ import { Button } from "@nextui-org/button";
 
 export default function Header() {
   const router = useRouter();
-
   const pathname = usePathname();
-  const title = usePageTitles(pathname);
+  const { title, showBackBtn } = usePageTitles(pathname);
 
   const handleBack = () => {
-    if (window.history.length > 1) {
-      router.back(); // Navigate back
-    }
+    router.back(); // Navigate back
   };
 
   return (
@@ -25,12 +22,12 @@ export default function Header() {
           size="sm"
           src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
         />
-        {window.history.length > 1 && (
+        {showBackBtn && (
           <Button
             onPress={handleBack}
             size="sm"
             className={
-              "flex items-center text-gray-400 hover:text-white transition bg-transparent"
+              "flex items-center text-gray-400 hover:text-white transition bg-transparent px-0 w-min"
             }
           >
             <ArrowLeftIcon className="w-5 h-5" />

@@ -1,11 +1,23 @@
 import { useMemo } from "react";
 
 // Map routes to dynamic titles using regular expressions
-const routesToTitles: { pattern: RegExp; title: string }[] = [
-  { pattern: /^\/dashboard\/$/, title: "Credentials" },
-  { pattern: /^\/dashboard\/scan\/$/, title: "Scan" },
-  { pattern: /^\/dashboard\/settings\/$/, title: "Settings" },
-  { pattern: /^\/dashboard\/credentials\/$/, title: "Credentials" },
+const routesToTitles: {
+  pattern: RegExp;
+  title: string;
+  showBackBtn?: boolean;
+}[] = [
+  { pattern: /^\/dashboard\/$/, title: "Credentials", showBackBtn: false },
+  { pattern: /^\/dashboard\/scan\/$/, title: "Scan", showBackBtn: false },
+  {
+    pattern: /^\/dashboard\/settings\/$/,
+    title: "Settings",
+    showBackBtn: false,
+  },
+  {
+    pattern: /^\/dashboard\/credentials\/$/,
+    title: "Credentials",
+    showBackBtn: false,
+  },
   {
     pattern: /^\/dashboard\/credentials\/work\/.+\/$/,
     title: "Credential Detail",
@@ -21,13 +33,18 @@ const routesToTitles: { pattern: RegExp; title: string }[] = [
   },
 ];
 
-const usePageTitles = (pathname: string): string => {
-  const title = useMemo(() => {
+const usePageTitles = (
+  pathname: string
+): { title: string; showBackBtn: boolean } => {
+  const route = useMemo(() => {
     const route = routesToTitles.find(({ pattern }) => pattern.test(pathname));
-    return route?.title || "Dashboard";
+    return {
+      title: route?.title || "Dashboard",
+      showBackBtn: route?.showBackBtn === false ? false : true,
+    };
   }, [pathname]);
-
-  return title;
+  const { title, showBackBtn } = route;
+  return { title, showBackBtn };
 };
 
 export default usePageTitles;

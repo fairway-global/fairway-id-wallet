@@ -1,7 +1,6 @@
 "use client";
 import { IEducationCredential } from "@/utils/types";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import Image from "next/image";
 import { FingerPrintIcon, ShareIcon } from "@heroicons/react/24/outline";
 import { Button } from "@nextui-org/button";
@@ -9,15 +8,13 @@ import EducationCredential from "@/components/EducationCredential";
 import dayjs from "dayjs";
 
 export default function WorkCredentialDetail() {
-  const params = useParams();
   const [educationCredential, setEducationCredential] =
     useState<IEducationCredential>({} as IEducationCredential);
 
   useEffect(() => {
     // Get WorkCrednetial from ID:
-    const { id } = params;
     const uni: IEducationCredential = {
-      id: 223,
+      id: 23,
       universityId: 1,
       universityName: "Addis Ababa University",
       title: "Bsc in Accounting",
@@ -39,7 +36,6 @@ export default function WorkCredentialDetail() {
     <div className="flex flex-col items-center text-white">
       <EducationCredential
         educationCredential={educationCredential}
-        inDetailView={true}
         className={"w-full"}
       />
       <div
@@ -95,13 +91,14 @@ export default function WorkCredentialDetail() {
           <Button
             size="sm"
             className={"flex justify-center text-white bg-fwNewGreen w-full"}
-            onPress={
-              !educationCredential.signed &&
-              setEducationCredential((educationCredential) => ({
-                ...educationCredential,
-                signed: true,
-              }))
-            }
+            onPress={() => {
+              if (!educationCredential.signed) {
+                setEducationCredential((educationCredential) => ({
+                  ...educationCredential,
+                  signed: true,
+                }));
+              }
+            }}
           >
             {educationCredential.signed ? (
               <>
@@ -127,4 +124,14 @@ export default function WorkCredentialDetail() {
       </div>
     </div>
   );
+}
+
+export function generateStaticParams() {
+  // Return an array of params for the dynamic route
+  // Here you might have a set of IDs, e.g., from an API or static list
+  return [
+    { id: "1" },
+    { id: "2" },
+    { id: "24" }, // Include the ID(s) you expect to be valid
+  ];
 }

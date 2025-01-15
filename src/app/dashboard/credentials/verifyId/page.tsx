@@ -1,19 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { Input } from "@nextui-org/react";
-import { DatePicker } from "@nextui-org/react";
+import { DatePicker, Input } from "@nextui-org/react";
 import { FormEvent, useState } from "react";
 import { Button } from "@nextui-org/button";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import IDVerificationResult from "@/components/IdVerificationResult";
 import dayjs from "dayjs";
+import { parseDate, CalendarDate } from "@internationalized/date";
 
 export default function VerifyId() {
   const [editingMode, setEditingMode] = useState(false);
 
   const [fullName, setFullName] = useState("Biniam Beyene Bayisa");
-  const [birthDate, setBirthDate] = useState(dayjs());
+  const [birthDate, setBirthDate] = useState(dayjs("2019-01-25"));
 
   const onSave = (e: FormEvent) => {
     e.preventDefault();
@@ -22,10 +22,8 @@ export default function VerifyId() {
 
   const EditIcon = () => (
     <PencilIcon
-      onClick={(e: any) => {
+      onClick={() => {
         console.log("clicked edit...");
-        e.preventDefault();
-        e.stopPropagation();
         setEditingMode(true);
       }}
       className="h-3 w-3 text-white"
@@ -54,16 +52,23 @@ export default function VerifyId() {
               variant="flat"
               name={"fullName"}
               isRequired
-              onChange={(e: any) => setFullName(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setFullName(e.target.value)
+              }
             />
             <DatePicker
               isRequired
-              name={"birthDate"}
+              name="birthDate"
               className="w-full"
               label="Birth date"
-              value={dayjs()}
-              onChange={(value: any) => setBirthDate(value)}
+              value={parseDate(dayjs().format("YYYY-MM-DD"))} // Convert Dayjs to CalendarDate-compatible format
+              onChange={(value: CalendarDate | null) => {
+                if (value) {
+                  setBirthDate(dayjs(value.toString())); // Convert CalendarDate back to Dayjs if needed
+                }
+              }}
             />
+            ;
           </>
         ) : (
           <div className="text-white text-left text-md font-semibold flex flex-col gap-2 w-full">
