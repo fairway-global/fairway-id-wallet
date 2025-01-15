@@ -1,11 +1,7 @@
 "use client";
 
 import BlurredCard from "../../../components/ui/BlurredCard";
-import {
-  EyeSlashIcon,
-  QrCodeIcon,
-  AcademicCapIcon,
-} from "@heroicons/react/24/outline";
+import { EyeSlashIcon, QrCodeIcon } from "@heroicons/react/24/outline";
 import { Button } from "@nextui-org/button";
 import { useEffect, useState } from "react";
 import { Avatar } from "@nextui-org/react";
@@ -53,7 +49,6 @@ export default function Credentials() {
 
   return (
     <div className="text-white p-2 flex flex-col gap-3">
-      <p>Credentials</p>
       {!isIdentityVerified ? (
         <BlurredCard bgColor="#D91F05" className={"p-4"}>
           <div className="z-1 grid grid-cols-[60px_1fr] grid-rows-2 gap-2 place-content-center">
@@ -111,6 +106,7 @@ export default function Credentials() {
           </div>
         </div>
       )}
+
       {educationVerified &&
         educationCredentials.map(
           (educationCredential: IEducationCredential, key) => (

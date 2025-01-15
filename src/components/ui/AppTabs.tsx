@@ -15,9 +15,7 @@ const AppTabs: React.FC = () => {
       <Tabs
         aria-label="App Navigation"
         selectedKey={activeTab}
-        onSelectionChange={(key: { toString: () => string }) =>
-          setActiveTab(key.toString())
-        } // Ensure key is string
+        onSelectionChange={(key: string) => console.log("key", key)}
         className="rounded-full backdrop-blur-lg bg-white/10 p-2 shadow-lg w-full mt-auto mb-0"
         variant="solid"
         fullWidth={true}

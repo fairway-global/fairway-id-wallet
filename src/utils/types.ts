@@ -9,6 +9,7 @@ export interface IEducationCredential {
   expiryDate?: string;
   status: boolean;
   isNew: boolean;
+  signed?: boolean;
 }
 
 export interface IWorkCredential {
