@@ -3,13 +3,13 @@ import {Button} from '@nextui-org/button';
 
 export default function Welcome() {
     return(
-        <div className="grid grid-rows-[60%_40%] h-screen grid-flow-row-dense">
-      <div className="flex flex-col items-center justify-between p-8"> 
+        <div className="grid grid-rows-[60%_40%] h-screen grid-flow-row-dense text-center">
+      <div className="flex flex-col items-center justify-end gap-8 p-8"> 
         <Image
           src="/fw-logo.png"
           alt="Fairway logo"
-          width={180}
-          height={38}
+          width={200}
+          height={80}
           priority
         />
         <Image
@@ -21,13 +21,16 @@ export default function Welcome() {
         />
       </div>
       <div className="bg-[#3F5A69] p-8 flex flex-col gap-2 text-white">
-        <p className={'text-3xl font-bold'}>Welcome to Fairway Wallet</p>
-        <p className={'font-thin italic'}>Its secure and support managing credentials</p>
-        <Button color="warning" className={'flex justify-between w-full max-w-96 mt-4'}>
+        <p className={'text-3xl font-bold text-left'}>Welcome to Fairway Wallet</p>
+        <p className={'font-thin italic text-left'}>Its secure and support managing credentials</p>
+       
+       <div className="mt-auto flex flex-col gap-y-4">
+       <Button color="warning" className={'flex justify-between w-full max-w-96 mt-4'}>
             <span>CREATE A NEW WALLET</span>
             <span>&#8594;</span>
         </Button>
         <p className={'font-thin italic text-center'}>Recover An Existing Wallet</p>
+       </div>
       </div>
     </div>
     )
