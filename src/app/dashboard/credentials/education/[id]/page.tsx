@@ -125,13 +125,3 @@ export default function WorkCredentialDetail() {
     </div>
   );
 }
-
-export function generateStaticParams() {
-  // Return an array of params for the dynamic route
-  // Here you might have a set of IDs, e.g., from an API or static list
-  return [
-    { id: "1" },
-    { id: "2" },
-    { id: "24" }, // Include the ID(s) you expect to be valid
-  ];
-}
