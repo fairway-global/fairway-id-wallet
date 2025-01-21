@@ -4,6 +4,7 @@ import FWLogoBox from "@/components/ui/FWLogoBox";
 import { Button } from "@nextui-org/button";
 import { useRouter } from "next/navigation";
 import { phrases } from "../../utils/data";
+import { toast } from "sonner";
 
 const Seed = () => {
   const router = useRouter();
@@ -12,7 +13,7 @@ const Seed = () => {
     navigator.clipboard
       .writeText(stringToCopy)
       .then(() => {
-        alert(`Copied to clipboard: ${stringToCopy}`);
+        toast("Copied to clipboard", { position: "top-center" });
       })
       .catch((err) => {
         console.error("Failed to copy to clipboard: ", err);
@@ -41,7 +42,7 @@ const Seed = () => {
           {phrases.map((word, i) => (
             <div key={i} className="flex">
               <b className="text-fwNewGreen pr-2">{i + 1}</b>
-              word
+              {word}
             </div>
           ))}
           <Button
