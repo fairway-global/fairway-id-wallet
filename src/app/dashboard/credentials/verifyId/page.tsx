@@ -7,7 +7,7 @@ import { Button } from "@nextui-org/button";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
 import { parseDate, CalendarDate } from "@internationalized/date";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function VerifyId() {
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function VerifyId() {
   const onSave = (e: FormEvent) => {
     e.preventDefault();
     setEditingMode(false);
-    router.push("/");
+    router.push("otp");
   };
 
   const formatFaydaNumber = (value: string) => {

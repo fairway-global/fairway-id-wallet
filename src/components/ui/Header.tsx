@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { BellIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { Avatar } from "@nextui-org/react";
-import usePageTitles from "@/utils/usePageTitles";
+import usePageTitles from "@/hooks/usePageTitles";
 import { Button } from "@nextui-org/button";
 
 export default function Header() {
