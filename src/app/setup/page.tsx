@@ -68,7 +68,7 @@ const Seed = () => {
           "self-center mt-auto mb-0 flex justify-between w-full max-w-96"
         }
         isDisabled={false}
-        onPress={() => router.push("/seed/verify")}
+        onPress={() => router.push("/setup/verify")}
       >
         <span>Continue</span>
         <span>&#8594;</span>

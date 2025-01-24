@@ -4,31 +4,19 @@ import FWLogoBox from "@/components/ui/FWLogoBox";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/react";
 import { useMemo, useState } from "react";
+import { phrases } from "@/utils/data";
+import { useRouter } from "next/navigation";
 
 const Seed = () => {
+  const router = useRouter();
   const [inputSeed, setInputSeed] = useState<Record<number, string>>({});
-  const phrases = [
-    "spoil",
-    "typical",
-    "maze",
-    "drop",
-    "frequent",
-    "keep",
-    "ball",
-    "aware",
-    "another",
-    "wasp",
-    "dose",
-    "naive",
-  ];
-
-  // Check if the inputSeed matches the correct phrases
   const seedMatches: boolean = useMemo(() => {
-    // Ensure all phrases match and are entered in the correct order
     return phrases.every((phrase, index) => inputSeed[index] === phrase);
   }, [inputSeed, phrases]);
 
   const onCreateWallet = () => {
+    router.push("/setup/password");
+    // navigate to password creation
     // Verify seed is correct
     // Create a wallet via API
     // Show Success message
@@ -96,7 +84,8 @@ const Seed = () => {
         className={
           "self-center mt-auto mb-0 flex justify-between w-full max-w-96"
         }
-        isDisabled={!seedMatches}
+        // FIXME: enable after demo
+        // isDisabled={!seedMatches}
         onPress={onCreateWallet}
       >
         <span>Continue</span>
