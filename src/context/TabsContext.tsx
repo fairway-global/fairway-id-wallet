@@ -1,7 +1,6 @@
-"use client"
+"use client";
 import React, { createContext, ReactNode, useContext, useState } from "react";
 
-// Define the Context type
 interface TabsContextType {
   activeTab: string;
   setActiveTab: (tab: string) => void;

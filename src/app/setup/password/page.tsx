@@ -46,7 +46,7 @@ const Password = () => {
     setIsLoading(true);
     setTimeout(() => {
       toast("Wallet created successfully", { position: "top-center" });
-      router.push("/dashboard");
+      router.push("/setup/final");
     }, 3000);
   };
 
