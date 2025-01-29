@@ -1,11 +1,12 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import IDVerificationResult from "../../../../../components/IdVerificationResult";
 import { Button, InputOtp } from "@nextui-org/react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import IDVerificationResult from "@/components/IdVerificationResult";
+import useLoading from "@/hooks/useLoading";
 
 const OTP = () => {
   const router = useRouter();
@@ -21,6 +22,16 @@ const OTP = () => {
       return;
     }
     toast("OTP verified successfully, Identity Verified.");
+  };
+
+  const { isLoading, startLoading, stopLoading } = useLoading();
+
+  const onVerify = () => {
+    startLoading();
+    setTimeout(() => {
+      setOtpVerified(true);
+      stopLoading();
+    }, 3000);
   };
 
   const onMove = () => {};

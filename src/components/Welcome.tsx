@@ -33,7 +33,7 @@ export default function Welcome() {
 
         <div className="mt-auto flex flex-col gap-y-4">
           <Button
-            onPress={() => router.push("/seed")}
+            onPress={() => router.push("/setup")}
             color="warning"
             className={"flex justify-between w-full max-w-96 mt-4"}
           >
@@ -41,7 +41,7 @@ export default function Welcome() {
             <span>&#8594;</span>
           </Button>
           <p
-            onClick={() => router.push("/seed/verify?recover=true")}
+            onClick={() => router.push("/setup/verify?recover=true")}
             className={"font-thin italic text-center"}
           >
             Recover An Existing Wallet

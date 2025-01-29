@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { BellIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { Avatar } from "@nextui-org/react";
-import usePageTitles from "@/utils/usePageTitles";
+import usePageTitles from "@/hooks/usePageTitles";
 import { Button } from "@nextui-org/button";
 
 export default function Header() {
@@ -18,10 +18,15 @@ export default function Header() {
   return (
     <div className="p-4 flex flex-row justify-between items-center h-16 bg-transparent text-white">
       <div className="flex gap-1">
-        <Avatar
-          size="sm"
-          src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
-        />
+        <div className="flex gap-2 items-center">
+          <Avatar
+            size="sm"
+            src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
+          />
+          <p className="text-sm text-gray-200 font-medium">
+            Hi, <b>Biniam</b>
+          </p>
+        </div>
         {showBackBtn && (
           <Button
             onPress={handleBack}
