@@ -19,10 +19,19 @@ const IdentityCredential: FC<IdentityCredentialProps> = ({
 
   const onVerify = () => {
     console.log("");
+    identityCredential.status === "active";
+  };
+
+  const gotoDetailPage = () => {
+    router.push("/dashboard/credentails/identity");
   };
 
   return identityCredential.status !== "active" ? (
-    <BlurredCard bgColor="#D91F05" className={`p-4 ${className}`}>
+    <BlurredCard
+      bgColor="#D91F05"
+      className={`p-4 ${className}`}
+      onClick={gotoDetailPage}
+    >
       <div className="z-1 grid grid-cols-[60px_1fr] grid-rows-2 gap-2 place-content-center">
         <section className="row-span-2 text-white flex items-center justify-center">
           <div className="rounded-full w-[60px] h-[60px] bg-fwNewRed flex items-center justify-center">

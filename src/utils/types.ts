@@ -18,6 +18,7 @@ export interface IIdentityCredential {
   status: "pending" | "active" | "archived";
   issuedDate?: string;
   expiryDate?: string;
+  signed?: boolean;
 }
 
 export interface IEducationCredential {
