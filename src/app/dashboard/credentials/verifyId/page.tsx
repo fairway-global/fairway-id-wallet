@@ -7,20 +7,27 @@ import { Button } from "@nextui-org/button";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
 import { parseDate, CalendarDate } from "@internationalized/date";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 export default function VerifyId() {
   const router = useRouter();
-  const [editingMode, setEditingMode] = useState(false);
+  const [editingMode, setEditingMode] = useState(true);
 
-  const [fullName, setFullName] = useState("Biniam Beyene Bayisa");
-  const [birthDate, setBirthDate] = useState(dayjs("2019-01-25"));
+  const [fullName, setFullName] = useState("");
+  const [birthDate, setBirthDate] = useState(dayjs());
   const [faydaNumber, setFaydaNumber] = useState("XXXX-XXXX-XXXX-XXXX");
 
   const onSave = (e: FormEvent) => {
     e.preventDefault();
     setEditingMode(false);
-    router.push("otp");
+    router.push({
+      pathname: "otp",
+      query: {
+        fullName,
+        birthDate: dayjs(birthDate).format("DD.MM.YYYY"),
+        faydaNumber,
+      },
+    });
   };
 
   const formatFaydaNumber = (value: string) => {
@@ -142,7 +149,6 @@ export default function VerifyId() {
                 color="default"
                 onPress={() => {
                   setEditingMode(true);
-                  setResultGiven(false);
                 }}
                 size="sm"
                 className={"flex justify-between w-max"}

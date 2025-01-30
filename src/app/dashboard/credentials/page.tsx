@@ -14,27 +14,12 @@ export default function Credentials() {
   const [isIdentityVerified] = useState(false);
   const [showEducation] = useState(false);
   const [showWork] = useState(false);
-  const [identityCredential, setIdentityCredential] =
-    useState<IIdentityCredential>();
   const [educationCredentials, setEducationCredentials] = useState<
     IEducationCredential[]
   >([]);
   const [workCredentials, setWorkCredentials] = useState<IWorkCredential[]>([]);
 
   useEffect(() => {
-    const id: IIdentityCredential = {
-      id: 234,
-      did: "did:0x1234567890abcdef01234567890abcdef01234567",
-      fullName: "Biniam Beyene Bayisa",
-      idProvider: "Faydaa",
-      birthDate: "08/02/1994",
-      phoneNumber: "+251934765432",
-      gender: "M",
-      city: "Addis Ababa",
-      country: "Ethiopia",
-      status: "pending",
-    };
-    setIdentityCredential(id);
     const uni: IEducationCredential = {
       id: 223,
       universityId: 1,
@@ -63,9 +48,7 @@ export default function Credentials() {
 
   return (
     <div className="text-white p-2 flex flex-col gap-3">
-      {identityCredential && (
-        <IdentityCredential identityCredential={identityCredential} />
-      )}
+      <IdentityCredential />
       {isIdentityVerified && <NationalIDBadge />}
 
       {showEducation &&

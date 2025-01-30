@@ -47,6 +47,17 @@ export interface IWorkCredential {
   signed: boolean;
 }
 
+export interface AuthState {
+  token: string;
+  isAuthenticated: boolean;
+}
+
+export interface UserState {
+  id: string;
+  name: string;
+  email: string;
+}
+
 export type ActionType =
   | { type: "SET_CREDENTIALS"; payload: SDK.Domain.Credential[] }
   | { type: "SET_PLUTO"; payload: SDK.Domain.Pluto }

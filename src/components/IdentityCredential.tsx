@@ -1,32 +1,28 @@
 "use client";
 import BlurredCard from "./ui/BlurredCard";
 import { FC } from "react";
-import { IIdentityCredential } from "@/utils/types";
 import { EyeSlashIcon, QrCodeIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import { Avatar, Button } from "@nextui-org/react";
+import useStore from "../store/store";
 
 interface IdentityCredentialProps {
-  identityCredential: IIdentityCredential;
   className?: string;
 }
 
-const IdentityCredential: FC<IdentityCredentialProps> = ({
-  identityCredential,
-  className,
-}) => {
+const IdentityCredential: FC<IdentityCredentialProps> = ({ className }) => {
   const router = useRouter();
+  const { identityCredential } = useStore();
 
   const onVerify = () => {
-    console.log("");
-    identityCredential.status === "active";
+    router.push("/dashboard/credentials/verifyId");
   };
 
   const gotoDetailPage = () => {
     router.push("/dashboard/credentails/identity");
   };
 
-  return identityCredential.status !== "active" ? (
+  return identityCredential === null ? (
     <BlurredCard
       bgColor="#D91F05"
       className={`p-4 ${className}`}
