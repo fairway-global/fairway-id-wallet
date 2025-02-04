@@ -1,4 +1,3 @@
-// store/store.ts
 import { create, StateCreator } from "zustand";
 import { persist, PersistOptions } from "zustand/middleware";
 import {
@@ -42,6 +41,12 @@ interface AppState {
   error: Err | null;
   setError: (error: Err) => void;
   clearError: () => void;
+
+  // Reset all credentials
+  reset: () => void;
+
+  // Sign out
+  signOut: () => void;
 }
 
 type MyPersist = (
@@ -102,6 +107,25 @@ const useStore = create<AppState>(
       error: null,
       setError: (error) => set({ error }),
       clearError: () => set({ error: null }),
+
+      // Reset all credentials
+      reset: () =>
+        set({
+          identityCredential: null,
+          educationCredentials: [],
+          workCredentials: [],
+        }),
+
+      // Sign out
+      signOut: () =>
+        set({
+          auth: null,
+          user: null,
+          identityCredential: null,
+          educationCredentials: [],
+          workCredentials: [],
+          error: null,
+        }),
     }),
     {
       name: "app-storage", // Key for localStorage
