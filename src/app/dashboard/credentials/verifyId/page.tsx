@@ -7,10 +7,12 @@ import { Button } from "@nextui-org/button";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
 import { parseDate, CalendarDate } from "@internationalized/date";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import useLoading from "@/hooks/useLoading";
 
 export default function VerifyId() {
   const router = useRouter();
+  const { isLoading, startLoading, stopLoading } = useLoading();
   const [editingMode, setEditingMode] = useState(true);
 
   const [fullName, setFullName] = useState("");
@@ -19,15 +21,18 @@ export default function VerifyId() {
 
   const onSave = (e: FormEvent) => {
     e.preventDefault();
+    if (editingMode) {
+      setEditingMode(false);
+      return;
+    }
     setEditingMode(false);
-    router.push({
-      pathname: "otp",
-      query: {
-        fullName,
-        birthDate: dayjs(birthDate).format("DD.MM.YYYY"),
-        faydaNumber,
-      },
-    });
+    startLoading();
+    setTimeout(() => {
+      stopLoading();
+      router.push(
+        `/dashboard/credentials/verifyId/otp?fullName=${fullName}&birthDate=${birthDate}&faydaNumber=${faydaNumber}`
+      );
+    }, 3000);
   };
 
   const formatFaydaNumber = (value: string) => {
@@ -74,17 +79,18 @@ export default function VerifyId() {
               type="text"
               variant="flat"
               name={"fullName"}
-              isRequired
+              isRequired={true}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setFullName(e.target.value)
               }
             />
             <DatePicker
-              isRequired
+              showMonthAndYearPickers={true}
+              isRequired={true}
               name="birthDate"
               className="w-full text-white"
               label="Birth date"
-              value={parseDate(dayjs().format("YYYY-MM-DD"))} // Convert Dayjs to CalendarDate-compatible format
+              value={parseDate(dayjs(birthDate).format("YYYY-MM-DD"))} // Convert Dayjs to CalendarDate-compatible format
               onChange={(value: CalendarDate | null) => {
                 if (value) {
                   setBirthDate(dayjs(value.toString())); // Convert CalendarDate back to Dayjs if needed
@@ -98,7 +104,7 @@ export default function VerifyId() {
               type="text"
               variant="flat"
               name="faydaNumber"
-              isRequired
+              isRequired={true}
               minLength={19}
               maxLength={19} // 16 digits + 3 dashes
               value={formatFaydaNumber(faydaNumber)} // Display the formatted value
@@ -136,10 +142,10 @@ export default function VerifyId() {
         <div className="flex gap-2">
           {editingMode ? (
             <Button
-              onPress={() => setEditingMode(false)}
+              type="submit"
               color="warning"
               size="sm"
-              className={"flex justify-between w-max"}
+              className={"flex justify-between"}
             >
               Save
             </Button>
@@ -151,7 +157,7 @@ export default function VerifyId() {
                   setEditingMode(true);
                 }}
                 size="sm"
-                className={"flex justify-between w-max"}
+                className={"flex justify-between"}
               >
                 Edit
               </Button>
@@ -159,7 +165,8 @@ export default function VerifyId() {
                 type="submit"
                 color="success"
                 size="sm"
-                className={"flex justify-between w-max"}
+                className={"flex justify-between"}
+                isLoading={isLoading}
               >
                 Verify
               </Button>

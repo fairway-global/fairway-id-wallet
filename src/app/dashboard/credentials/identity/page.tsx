@@ -1,44 +1,21 @@
 "use client";
-import { IEducationCredential, IIdentityCredential } from "@/utils/types";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FingerPrintIcon, ShareIcon } from "@heroicons/react/24/outline";
 import { Button } from "@nextui-org/button";
-import EducationCredential from "@/components/EducationCredential";
 import dayjs from "dayjs";
 import IdentityCredential from "@/components/IdentityCredential";
+import useStore from "@/store/store";
 
 export default function IdentityCredentialDetail() {
-  const [identityCredential, setIdentityCredential] =
-    useState<IIdentityCredential>({} as IIdentityCredential);
-
-  useEffect(() => {
-    // Get Identify Credential from ID:
-    const id: IIdentityCredential = {
-      id: 234,
-      did: "did:0x1234567890abcdef01234567890abcdef01234567",
-      fullName: "Biniam Beyene Bayisa",
-      idProvider: "Faydaa",
-      birthDate: "08/02/1994",
-      phoneNumber: "+251934765432",
-      gender: "M",
-      city: "Addis Ababa",
-      country: "Ethiopia",
-      status: "pending",
-    };
-    setIdentityCredential(id);
-  }, []);
+  const { identityCredential, setIdentityCredential } = useStore();
 
   const HR = () => (
     <hr className="h-px my-4 bg-gray-400 border-0 dark:bg-gray-400 w-full" />
   );
 
-  return (
+  return identityCredential ? (
     <div className="flex flex-col items-center text-white">
-      <IdentityCredential
-        identityCredential={identityCredential}
-        className={"w-full"}
-      />
+      <IdentityCredential className={"w-full"} />
       <div
         className={`rounded-b-2xl p-4 flex flex-col items-center h-auto bg-[rgba(255,255,255,0.15)] backdrop-blur-xl border border-[rgba(255,255,255,0.2)] shadow-lg w-[80%]`}
       >
@@ -53,19 +30,23 @@ export default function IdentityCredentialDetail() {
         <div className="flex flex-col items-start gap-2 w-full">
           <p className="text-xs">ID Provider</p>
           <p className="text-[20px] font-bold">
-            {identityCredential.idProvider}
+            {identityCredential?.idProvider ?? ""}
           </p>
         </div>
         <HR />
         <div className="grid grid-cols-2 w-full">
           <div className="flex flex-col items-start gap-2 w-full">
             <p className="text-xs">GENDER</p>
-            <p className="text-[20px] font-bold">{identityCredential.gender}</p>
+            <p className="text-[20px] font-bold">
+              {identityCredential?.gender ?? ""}
+            </p>
           </div>
           <div className="flex flex-col items-end gap-2 w-full">
             <p className="text-xs">DATE OF BIRTH</p>
             <p className="text-[20px] font-bold">
-              {dayjs(identityCredential.birthDate).format("DD.MM.YYYY")}
+              {identityCredential?.birthDate
+                ? dayjs(identityCredential.birthDate).format("DD.MM.YYYY")
+                : ""}
             </p>
           </div>
         </div>
@@ -110,10 +91,7 @@ export default function IdentityCredentialDetail() {
             className={"flex justify-center text-white bg-fwNewGreen w-full"}
             onPress={() => {
               if (!identityCredential.status) {
-                setIdentityCredential((indentityCredential) => ({
-                  ...indentityCredential,
-                  signed: true,
-                }));
+                setIdentityCredential({ ...identityCredential, signed: true });
               }
             }}
           >
@@ -140,5 +118,7 @@ export default function IdentityCredentialDetail() {
         </div>
       </div>
     </div>
+  ) : (
+    <div>No Credential found.</div>
   );
 }

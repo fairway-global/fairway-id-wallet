@@ -59,6 +59,10 @@ const Seed = () => {
             </div>
           ))}
           <Button
+            // FIXME: Remove after demo
+            onPress={() => {
+              setInputSeed({ ...phrases });
+            }}
             color="default"
             className={
               "absolute ml-[25%] -bottom-4 z-20 flex rounded-full gap-2 px-6 w-max mt-4"

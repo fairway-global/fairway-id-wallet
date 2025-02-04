@@ -1,17 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  IEducationCredential,
-  IIdentityCredential,
-  IWorkCredential,
-} from "@/utils/types";
+import { IEducationCredential, IWorkCredential } from "@/utils/types";
 import WorkCredential from "@/components/WorkCredential";
 import EducationCredential from "@/components/EducationCredential";
 import IdentityCredential from "@/components/IdentityCredential";
 import NationalIDBadge from "@/components/ui/NationIDBadge";
+import useStore from "@/store/store";
 
 export default function Credentials() {
-  const [isIdentityVerified] = useState(false);
+  const { identityCredential } = useStore();
   const [showEducation] = useState(false);
   const [showWork] = useState(false);
   const [educationCredentials, setEducationCredentials] = useState<
@@ -49,7 +46,7 @@ export default function Credentials() {
   return (
     <div className="text-white p-2 flex flex-col gap-3">
       <IdentityCredential />
-      {isIdentityVerified && <NationalIDBadge />}
+      {identityCredential && <NationalIDBadge />}
 
       {showEducation &&
         educationCredentials.map(

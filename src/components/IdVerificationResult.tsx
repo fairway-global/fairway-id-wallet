@@ -8,15 +8,17 @@ import {
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { Button } from "@nextui-org/button";
+import { useRouter } from "next/navigation";
+import useStore from "../store/store";
 
 const IDVerificationResult = () => {
+  const router = useRouter();
   const [isSuccessful] = useState(true);
-  const [fullName] = useState("Biniam Beyene Bayisa");
-  const [birthDate] = useState("09/10/1992");
-  const [fcn] = useState("2345 6780 9764 3145");
+  const { identityCredential } = useStore();
 
   const onEditDetails = () => {
     console.log("on Edit clicked");
+    router.back();
   };
 
   const onReload = () => {
@@ -25,7 +27,7 @@ const IDVerificationResult = () => {
 
   return (
     <div className={"flex flex-col"}>
-      <div className="w-[180px] h-[160px] border-2 border-dashed grid place-items-center">
+      <div className="w-[180px] h-[160px] border-2 border-dashed grid place-items-center mb-2">
         <Image
           alt="National ID/Fayda Logo"
           src={isSuccessful ? "/nid-result.png" : "/not-found.svg"}
@@ -36,30 +38,30 @@ const IDVerificationResult = () => {
       {isSuccessful ? (
         <>
           <p className="text-fwNewGreen flex">
-            <span>{fullName}</span>
+            <span>{identityCredential?.fullName}</span>
             <CheckBadgeIcon className="h-6 w-6 pl-2 fill:fwNewGreen" />
           </p>
           <p className="flex items-center text-fwNewGreen">
-            <span>{birthDate}</span>
+            <span>{identityCredential?.birthDate}</span>
             <CheckBadgeIcon className="h-6 w-6 pl-2 fill:fwNewGreen" />
           </p>
           <p className="flex items-center text-fwNewGreen">
-            <span>FCN :{fcn}</span>
+            <span>FCN :{identityCredential?.providerIdentifier}</span>
             <CheckBadgeIcon className="h-6 w-6 pl-2 fill:fwNewGreen" />
           </p>
         </>
       ) : (
         <>
           <p className="text-fwNewRed flex">
-            <span>{fullName}</span>
+            <span>{identityCredential?.fullName}</span>
             <ExclamationCircleIcon className="h-6 w-6 text-fwNewRed" />
           </p>
           <p className="flex items-center text-fwNewRed">
-            <span>{birthDate}</span>
+            <span>{identityCredential?.birthDate}</span>
             <ExclamationCircleIcon className="h-6 w-6 text-fwNewRed" />
           </p>
           <p className="flex items-center text-fwNewRed">
-            <span>FCN :{fcn}</span>
+            <span>FCN :{identityCredential?.providerIdentifier}</span>
             <ExclamationCircleIcon className="h-6 w-6 text-fwNewRed" />
           </p>
         </>
@@ -75,7 +77,7 @@ const IDVerificationResult = () => {
           />
           <Button
             className={
-              "bg-fwNewGreen text-black rounded-full max-w-96 mt-4 text-lg"
+              "bg-fwNewGreen text-black rounded-full max-w-64 mt-4 text-md"
             }
           >
             Verification Successful

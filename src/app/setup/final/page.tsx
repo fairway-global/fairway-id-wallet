@@ -17,7 +17,7 @@ const FinalSetup = () => {
       >
         <p className={"font-bold text-md text-white"}>You are all Done!</p>
         <p className={"text-gray-400 text-center"}>
-          Your Fairway Professional ID walletis setup successfully.
+          Your Fairway Professional ID wallet is setup successfully.
         </p>
 
         <div className="my-5">

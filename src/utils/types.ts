@@ -16,6 +16,7 @@ export interface IIdentityCredential {
   city: string;
   country: string;
   status: "pending" | "active" | "archived";
+  providerIdentifier: number;
   issuedDate?: string;
   expiryDate?: string;
   signed?: boolean;

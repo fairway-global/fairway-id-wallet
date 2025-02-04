@@ -11,6 +11,7 @@ export function middleware(req: NextRequest) {
   if (!isMobile) {
     // Redirect desktop users to error page
     return NextResponse.redirect(new URL("/error", req.url));
+    // throw new Error("Please use only mobile devices");
   }
 
   // Allow access for mobile users
