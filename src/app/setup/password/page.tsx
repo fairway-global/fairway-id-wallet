@@ -1,25 +1,13 @@
 "use client";
 
-import {
-  EyeIcon,
-  EyeSlashIcon,
-  ExclamationCircleIcon,
-  CheckCircleIcon,
-} from "@heroicons/react/24/outline";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { Input } from "@nextui-org/react";
 import React, { useMemo, useState } from "react";
 import FWLogoBox from "@/components/ui/FWLogoBox";
 import { Button } from "@nextui-org/button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-const ErrorIcon: React.FC<{ err: boolean }> = ({ err }) => {
-  return err ? (
-    <ExclamationCircleIcon className="h-6 w-6 text-fwNewRed" />
-  ) : (
-    <CheckCircleIcon className="h-6 w-6 text-fwNewGreen" />
-  );
-};
+import { ErrorIcon } from "@/components/ui/ErrorIcon";
 
 const Password = () => {
   const router = useRouter();
@@ -42,6 +30,7 @@ const Password = () => {
   const isPasswordValid = useMemo(() => {
     return isEnoughLength && passwordsMatch && hasSpecialChar;
   }, [isEnoughLength, passwordsMatch, hasSpecialChar]);
+
   const onSavePassword = () => {
     setIsLoading(true);
     setTimeout(() => {

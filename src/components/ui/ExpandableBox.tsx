@@ -15,7 +15,6 @@ export const ExpandableBox: FC<IExpandableBox> = ({ title, children }) => {
 
   useEffect(() => {
     if (expanded && contentRef.current) {
-      // Calculate the height of the content
       setHeight(contentRef.current.scrollHeight);
     } else {
       setHeight(0);
