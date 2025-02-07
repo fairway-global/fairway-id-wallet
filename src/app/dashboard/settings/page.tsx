@@ -1,7 +1,13 @@
+import { ExpandableBox } from "@/components/ui/ExpandableBox";
+
 export default function Settings() {
   return (
-    <div className="bg-black min-h-screen">
-      <h1 className="text-white text-4xl p-4">Settings</h1>
+    <div className="bg-black min-h-screen flex flex-col gap-4">
+      <ExpandableBox title="Change Password" children={<div></div>} />
+      <ExpandableBox
+        title="Archive Wallet"
+        children={<div>Archive Wallet</div>}
+      />
     </div>
   );
 }
