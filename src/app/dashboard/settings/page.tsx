@@ -3,17 +3,16 @@
 import { ExpandableBox } from "@/components/ui/ExpandableBox";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { Button, Input } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ErrorIcon } from "@/components/ui/ErrorIcon";
 
 export default function Settings() {
-  const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
   const [passwordVal, setPasswordVal] = useState("");
   const [confirmPasswordVal, setConfirmPasswordVal] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isResetLoading, setIsResetLoading] = useState(false);
 
   const hasSpecialChar = useMemo(() => {
     const specialCharTest = (str: string) => /[!@#$%^&*(),.?":{}|<>]/.test(str);
@@ -33,9 +32,12 @@ export default function Settings() {
   const onSavePassword = () => {
     setIsLoading(true);
     setTimeout(() => {
-      toast("Wallet created successfully", { position: "top-center" });
-      router.push("/setup/final");
+      toast("Password updated Successfully", { position: "top-center" });
     }, 3000);
+  };
+
+  const onReset = () => {
+    setIsResetLoading(true);
   };
 
   return (
@@ -136,7 +138,30 @@ export default function Settings() {
       />
       <ExpandableBox
         title="Archive Wallet"
-        children={<div>Archive Wallet</div>}
+        children={
+          <div className="flex flex-col items-center gap-4">
+            <ErrorIcon err={true} className={"!w-16 !h-16"} />
+            <p className="text-white">
+              Are you sure you want to archive this wallet? Archiving will make
+              the wallet inactive and prevent further transactions. You can
+              restore it later, but it will not be accessible for day-to-day
+              operations while archived. This action does not delete the wallet
+              or its data.
+            </p>
+            <div className="w-full mt-4">
+              <Button
+                className={"self-center mt-auto mb-0 w-full bg-fwNewRed"}
+                // FIXME: enable after demo
+                isDisabled={isResetLoading}
+                onPress={onReset}
+                isLoading={isResetLoading}
+                size={"sm"}
+              >
+                Archive
+              </Button>
+            </div>
+          </div>
+        }
       />
     </div>
   );
