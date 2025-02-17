@@ -24,6 +24,7 @@ export interface IIdentityCredential {
 
 export interface IEducationCredential {
   id: number;
+  fullName: string;
   did: string;
   title: string;
   universityId: number;

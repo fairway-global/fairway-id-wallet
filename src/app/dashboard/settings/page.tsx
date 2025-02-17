@@ -6,8 +6,10 @@ import { Button, Input } from "@nextui-org/react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ErrorIcon } from "@/components/ui/ErrorIcon";
+import useStore from "../../../store/store";
 
 export default function Settings() {
+  const { reset } = useStore();
   const [isVisible, setIsVisible] = useState(false);
   const [passwordVal, setPasswordVal] = useState("");
   const [confirmPasswordVal, setConfirmPasswordVal] = useState("");
@@ -38,6 +40,11 @@ export default function Settings() {
 
   const onReset = () => {
     setIsResetLoading(true);
+    reset();
+    setTimeout(() => {
+      setIsResetLoading(false);
+      toast("Reset Successfully", { position: "top-center" });
+    }, 3000);
   };
 
   return (

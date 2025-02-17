@@ -25,7 +25,11 @@ const EducationCredential: FC<IEducationCredentialProps> = ({
         )
       }
     >
-      <div className="z-1 grid grid-cols-[36px_1fr] grid-rows-2 gap-x-2 gap-y-0 place-content-center">
+      <div
+        className={`${
+          !educationCredential.signed ? "opacity-50" : ""
+        } z-1 grid grid-cols-[36px_1fr] grid-rows-2 gap-x-2 gap-y-0 place-content-center`}
+      >
         <section className="row-span-2 text-white flex items-center justify-center">
           <div className="rounded-full w-[36px] h-[36px] bg-fwNewPurple flex items-center justify-center">
             <AcademicCapIcon className="h-6 w-6 text-white" />
@@ -37,15 +41,15 @@ const EducationCredential: FC<IEducationCredentialProps> = ({
         </p>
         {!educationCredential.signed ? (
           <>
-            <Image
+            {/* <Image
               className="absolute top-0 right-3 h-12 w-12 text-fwOrange"
               alt="National ID/Fayda Logo"
               src={"/bookmark.svg"}
-              height={60}
-              width={60}
-            />
+              height={40}
+              width={120}
+            /> */}
             <p className="z-10 text-white absolute top-1 right-5 text-sm">
-              NEW
+              Pending
             </p>
           </>
         ) : (
@@ -64,7 +68,7 @@ const EducationCredential: FC<IEducationCredentialProps> = ({
           {educationCredential.title}
         </p>
         <p className="text-fwNewGreen font-medium">
-          {educationCredential.issuedDate}
+          {educationCredential.signed ? educationCredential.issuedDate : ""}
         </p>
       </div>
     </BlurredCard>

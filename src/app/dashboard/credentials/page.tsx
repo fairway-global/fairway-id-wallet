@@ -6,30 +6,30 @@ import EducationCredential from "@/components/EducationCredential";
 import IdentityCredential from "@/components/IdentityCredential";
 import NationalIDBadge from "@/components/ui/NationIDBadge";
 import useStore from "@/store/store";
+import { Button } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 
 export default function Credentials() {
+  const router = useRouter();
   const { identityCredential } = useStore();
-  const [showEducation] = useState(false);
   const [showWork] = useState(false);
-  const [educationCredentials, setEducationCredentials] = useState<
-    IEducationCredential[]
-  >([]);
+  const { educationCredentials } = useStore();
   const [workCredentials, setWorkCredentials] = useState<IWorkCredential[]>([]);
 
   useEffect(() => {
-    const uni: IEducationCredential = {
-      id: 223,
-      universityId: 1,
-      did: "did:0x1234567890abcdef01234567890abcdef01234567",
-      universityName: "Addis Ababa University",
-      title: "Bsc in Accounting",
-      gpa: 3.5,
-      graduationDate: "02/2023",
-      issuedDate: "02/02/2023",
-      status: true,
-      isNew: false,
-    };
-    setEducationCredentials([uni]);
+    // const uni: IEducationCredential = {
+    //   id: 223,
+    //   universityId: 1,
+    //   did: "did:0x1234567890abcdef01234567890abcdef01234567",
+    //   universityName: "Addis Ababa University",
+    //   title: "Bsc in Accounting",
+    //   gpa: 3.5,
+    //   graduationDate: "02/2023",
+    //   issuedDate: "02/02/2023",
+    //   status: true,
+    //   isNew: false,
+    // };
+    // setEducationCredentials([uni]);
     const work: IWorkCredential = {
       id: 234,
       did: "did:0x1234567890abcdef01234567890abcdef01234567",
@@ -43,20 +43,34 @@ export default function Credentials() {
     setWorkCredentials([work]);
   }, []);
 
+  const onAddCredential = () => {
+    router.push("/dashboard/credentials/add");
+  };
+
   return (
-    <div className="text-white p-2 flex flex-col gap-3">
+    <div className="text-white px-2 flex flex-col gap-3">
       <IdentityCredential />
       {identityCredential && <NationalIDBadge />}
 
-      {showEducation &&
-        educationCredentials.map(
-          (educationCredential: IEducationCredential, key) => (
-            <EducationCredential
-              key={key}
-              educationCredential={educationCredential}
-            />
-          )
-        )}
+      {educationCredentials.map(
+        (educationCredential: IEducationCredential, key) => (
+          <EducationCredential
+            key={key}
+            educationCredential={educationCredential}
+          />
+        )
+      )}
+      {identityCredential && (
+        <Button
+          size="sm"
+          className={
+            "flex justify-center text-fwNewGreen border border-fwNewGreen bg-transparent w-full"
+          }
+          onPress={onAddCredential}
+        >
+          Add New Credential
+        </Button>
+      )}
       {showWork &&
         workCredentials?.length &&
         workCredentials.map((workCredential: IWorkCredential, key) => (

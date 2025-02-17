@@ -139,10 +139,10 @@ export default function VerifyId() {
           </div>
         )}
 
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2">
           <p className="text-white text-xs">
             By proceeding, you are giving consentfor Fairway Plc to store your
-            personalinfo, and agree to the terms and conditions.
+            personal info, and agree to the terms and conditions.
           </p>
           {editingMode ? (
             <Button

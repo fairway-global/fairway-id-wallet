@@ -1,32 +1,52 @@
 "use client";
 import { IEducationCredential } from "@/utils/types";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { FingerPrintIcon, ShareIcon } from "@heroicons/react/24/outline";
+import {
+  CheckIcon,
+  ClipboardIcon,
+  FingerPrintIcon,
+  ShareIcon,
+} from "@heroicons/react/24/outline";
 import { Button } from "@nextui-org/button";
 import EducationCredential from "@/components/EducationCredential";
 import dayjs from "dayjs";
+import useStore from "../../../../../store/store";
+import { useParams } from "next/navigation";
 
-export default function WorkCredentialDetail() {
-  const [educationCredential, setEducationCredential] =
-    useState<IEducationCredential>({} as IEducationCredential);
+export default function EducationCredentialDetail() {
+  const params = useParams();
+  const id = params?.id;
+  const { educationCredentials } = useStore();
 
-  useEffect(() => {
-    // Get WorkCrednetial from ID:
-    const uni: IEducationCredential = {
-      id: 23,
-      universityId: 1,
-      universityName: "Addis Ababa University",
-      title: "Bsc in Accounting",
-      gpa: 3.5,
-      graduationDate: "02/2023",
-      issuedDate: "02/02/2023",
-      status: true,
-      isNew: false,
-      signed: false,
-    };
-    setEducationCredential(uni);
-  }, []);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    if (educationCredential) {
+      try {
+        await navigator.clipboard.writeText(educationCredential?.did);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000); // Reset icon after 2 seconds
+      } catch (err) {
+        console.error("Failed to copy", err);
+      }
+    }
+  };
+
+  // Filter the education credential by ID
+  const educationCredential = useMemo(() => {
+    if (!id || !educationCredentials) return null; // Handle missing ID or credentials
+
+    // Find the credential with the matching ID
+    return educationCredentials.find(
+      (credential) => credential.id === Number(id)
+    );
+  }, [id, educationCredentials]);
+
+  // Handle the case where the credential is not found
+  if (!educationCredential) {
+    return <div>Education Credential not found.</div>;
+  }
 
   const HR = () => (
     <hr className="h-px my-4 bg-gray-400 border-0 dark:bg-gray-400 w-full" />
@@ -48,6 +68,23 @@ export default function WorkCredentialDetail() {
           width={72}
           className={"mt-2"}
         />
+        <HR />
+        <div className="flex flex-col items-start gap-2 w-full">
+          <p className="text-xs">DID</p>
+          <p className="text-sm font-bold flex items-center gap-2">
+            {educationCredential.did}
+            <button
+              onClick={handleCopy}
+              className="p-2 rounded-lg hover:bg-gray-200"
+            >
+              {copied ? (
+                <CheckIcon className="w-4 h-4 text-green-500" />
+              ) : (
+                <ClipboardIcon className="w-4 h-4 text-gray-600" />
+              )}
+            </button>
+          </p>
+        </div>
         <HR />
         <div className="flex flex-col items-start gap-2 w-full">
           <p className="text-xs">UNIVERSITY</p>
