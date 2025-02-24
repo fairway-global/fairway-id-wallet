@@ -26,6 +26,7 @@ export default function WorkCredentialDetail() {
       isNew: true,
       active: true,
       signed: false,
+      did: "",
     };
     setWorkCredential(work);
   }, []);

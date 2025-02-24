@@ -114,27 +114,27 @@ type Challenge = {
 //     }
 //   };
 
-export async function startAgent(
-  pluto: SDK.Domain.Pluto,
-  dispatch: React.Dispatch<ActionType>
-) {
-  const handleStart = async () => {
-    console.log(`starting agent with mediator : ${config.MEDIATOR_DID}`);
-    const a = SDK.Agent.initialize({
-      mediatorDID: SDK.Domain.DID.fromString(config.MEDIATOR_DID),
-      pluto,
-    });
-    a.addListener(SDK.ListenerKey.MESSAGE, handleMessages(pluto, a, dispatch));
-    console.log("listener has been add to the agant");
-    await a.start();
-    const mediator = a.currentMediatorDID;
-    if (!mediator) {
-      throw new Error("Mediator not available");
-    }
-    return a;
-  };
-
-  const agent = await handleStart();
-  dispatch({ type: "SET_AGENT", payload: agent });
-  return { agent };
-}
+//export async function startAgent(
+//  pluto: SDK.Domain.Pluto,
+//  dispatch: React.Dispatch<ActionType>
+//) {
+//  const handleStart = async () => {
+//    console.log(`starting agent with mediator : ${config.MEDIATOR_DID}`);
+//    const a = SDK.Agent.initialize({
+//      mediatorDID: SDK.Domain.DID.fromString(config.MEDIATOR_DID),
+//      pluto,
+//    });
+//    a.addListener(SDK.ListenerKey.MESSAGE, handleMessages(pluto, a, dispatch));
+//    console.log("listener has been add to the agant");
+//    await a.start();
+//    const mediator = a.currentMediatorDID;
+//    if (!mediator) {
+//      throw new Error("Mediator not available");
+//    }
+//    return a;
+//  };
+//
+//  const agent = await handleStart();
+//  dispatch({ type: "SET_AGENT", payload: agent });
+//  return { agent };
+//}

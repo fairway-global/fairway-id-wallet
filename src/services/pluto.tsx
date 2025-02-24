@@ -9,7 +9,7 @@ export const castor = new SDK.Castor(apollo);
 const preStart = async () => {
   const dbs = await indexedDB.databases();
   dbs.forEach((db) => {
-    if (db.name.includes("did-link")) {
+    if (db.name && db.name.includes("did-link")) {
       indexedDB.deleteDatabase(db.name);
     }
   });
@@ -19,7 +19,7 @@ export const connect = async () => {
   console.log("starting pluto ...");
   await preStart();
   const store = new SDK.Store({
-    name: config.PLUTO_DB_NAME,
+    name: config.PLUTO_DB_NAME!,
     storage: Storage,
     password: Buffer.from(config.PLUTO_PASSWD).toString("hex"),
   });

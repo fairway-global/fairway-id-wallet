@@ -1,0 +1,39 @@
+Aname: Build and Push Docker image to ECR
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on push to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger the workflow on PRs to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        region: ${{ secrets.AWS_REGION }}
+
+    - name: Build and push Docker image to ECR
+      run: |
+        # Define variables
+        IMAGE_NAME=fairway-id-wallet
+        ECR_REPOSITORY=fairway # Your ECR repository name
+        AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+        ECR_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${ECR_REPOSITORY}
+        
+        # Build the Docker image
+        docker build -t $ECR_URI:latest .
+        
+        # Push the Docker image to ECR
+        docker push $ECR_URI:latest

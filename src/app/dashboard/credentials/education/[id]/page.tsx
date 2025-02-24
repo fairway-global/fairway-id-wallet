@@ -12,6 +12,7 @@ import { Button } from "@nextui-org/button";
 import EducationCredential from "@/components/EducationCredential";
 import dayjs from "dayjs";
 import useStore from "../../../../../store/store";
+import setEducationCredentials from "../../../../../store/store";
 import { useParams } from "next/navigation";
 
 export default function EducationCredentialDetail() {
@@ -130,7 +131,7 @@ export default function EducationCredentialDetail() {
             className={"flex justify-center text-white bg-fwNewGreen w-full"}
             onPress={() => {
               if (!educationCredential.signed) {
-                setEducationCredential((educationCredential) => ({
+                setEducationCredentials((educationCredential) => ({
                   ...educationCredential,
                   signed: true,
                 }));
