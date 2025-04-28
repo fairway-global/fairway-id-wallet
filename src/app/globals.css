@@ -15,29 +15,29 @@
 }
 
 @font-face {
-  font-family: 'Sensation';
-  src: url('/public/fonts/sensation/Sensation-Regular.ttf') format('truetype');
+  font-family: "Sensation";
+  src: url("/public/fonts/sensation/Sensation-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Sensation';
-  src: url('/public/fonts/sensation/Sensation-Light.ttf') format('truetype');
+  font-family: "Sensation";
+  src: url("/public/fonts/sensation/Sensation-Light.ttf") format("truetype");
   font-weight: 100;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Sensation';
-  src: url('/public/fonts/sensation/Sansation_Italic.ttf') format('truetype');
+  font-family: "Sensation";
+  src: url("/public/fonts/sensation/Sansation_Italic.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Sensation';
-  src: url('/public/fonts/sensation/Sansation_Bold.ttf') format('truetype');
+  font-family: "Sensation";
+  src: url("/public/fonts/sensation/Sansation_Bold.ttf") format("truetype");
   font-weight: bold;
   font-style: normal;
 }
@@ -45,5 +45,5 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: 'Sansation', sans-serif;
+  font-family: "Sansation", sans-serif;
 }

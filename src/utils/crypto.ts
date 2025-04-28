@@ -1,5 +1,5 @@
 import sjcl from "sjcl";
-import config from "../config";
+import { config } from "../config";
 
 export class CryptoUtils {
   static encrypt(data: string): string {
