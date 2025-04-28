@@ -1,7 +1,7 @@
 import SDK from "@hyperledger/identus-edge-agent-sdk";
 import { ShortFormDIDResolverSample } from "@/utils/index";
 import { logger } from "@/utils/logger";
-import { config } from "@/config";
+import { config, MEDIATOR_URL } from "@/config";
 
 export class AgentService {
   private apollo: SDK.Apollo;
@@ -63,10 +63,7 @@ export class AgentService {
 
   private async buildAgentDependencies(pluto: SDK.Domain.Pluto) {
     this.logger.log("Agent", "Creating agent dependencies");
-    const mediatorDID = await this.fetchMediatorDID(
-      this.config.MEDIATOR_URL,
-      "did"
-    );
+    const mediatorDID = await this.fetchMediatorDID(MEDIATOR_URL, "did");
     const extraResolvers = [ShortFormDIDResolverSample];
     const api = new SDK.ApiImpl();
     const castor = new SDK.Castor(this.apollo, extraResolvers);

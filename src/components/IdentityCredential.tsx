@@ -4,7 +4,7 @@ import { FC } from "react";
 import { EyeSlashIcon, QrCodeIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import { Avatar, Button } from "@nextui-org/react";
-import useStore from "../store/store";
+import { useCredentialStore } from "../store/credentialStore";
 
 interface IdentityCredentialProps {
   className?: string;
@@ -12,7 +12,7 @@ interface IdentityCredentialProps {
 
 const IdentityCredential: FC<IdentityCredentialProps> = ({ className }) => {
   const router = useRouter();
-  const { identityCredential } = useStore();
+  const { credentials } = useCredentialStore();
 
   const onVerify = () => {
     router.push("/dashboard/credentials/verifyId");
@@ -22,7 +22,7 @@ const IdentityCredential: FC<IdentityCredentialProps> = ({ className }) => {
     router.push("/dashboard/credentails/identity");
   };
 
-  return identityCredential === null ? (
+  return credentials === null ? (
     <BlurredCard
       bgColor="#D91F05"
       className={`p-4 ${className}`}
@@ -61,7 +61,7 @@ const IdentityCredential: FC<IdentityCredentialProps> = ({ className }) => {
         <section className="flex flex-col justify-center">
           <p className="font-semibold text-lg">Identity Verified</p>
           <p className="font-light text-gray-300">
-            {identityCredential.fullName}
+            {credentials?.fullName ?? ""}
           </p>
         </section>
       </div>

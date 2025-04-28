@@ -4,10 +4,14 @@ import { FingerPrintIcon, ShareIcon } from "@heroicons/react/24/outline";
 import { Button } from "@nextui-org/button";
 import dayjs from "dayjs";
 import IdentityCredential from "@/components/IdentityCredential";
-import useStore from "@/store/store";
+import { useCredentialStore } from "../../../../store/credentialStore";
 
 export default function IdentityCredentialDetail() {
-  const { identityCredential, setIdentityCredential } = useStore();
+  const { credentials } = useCredentialStore();
+
+  const identityCredential = credentials.find(
+    (credential) => credential.type === "IdentityCredential"
+  );
 
   const HR = () => (
     <hr className="h-px my-4 bg-gray-400 border-0 dark:bg-gray-400 w-full" />
