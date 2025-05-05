@@ -6,10 +6,10 @@ import { Button, Input } from "@heroui/react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ErrorIcon } from "@/components/ui/ErrorIcon";
-import useStore from "../../../store/store";
+import { useWalletStore } from "../../../store/walletStore";
 
 export default function Settings() {
-  const { reset } = useStore();
+  const { resetWallet } = useWalletStore();
   const [isVisible, setIsVisible] = useState(false);
   const [passwordVal, setPasswordVal] = useState("");
   const [confirmPasswordVal, setConfirmPasswordVal] = useState("");
@@ -38,12 +38,16 @@ export default function Settings() {
     }, 3000);
   };
 
-  const onReset = () => {
+  const onReset = async () => {
     setIsResetLoading(true);
-    reset();
+    const resetSuccessful = await resetWallet();
     setTimeout(() => {
       setIsResetLoading(false);
-      toast("Reset Successfully", { position: "top-center" });
+      if (!resetSuccessful) {
+        toast.error("Failed to reset wallet", { position: "top-center" });
+        return;
+      }
+      toast("Wallet reset Successfully", { position: "top-center" });
     }, 3000);
   };
 
