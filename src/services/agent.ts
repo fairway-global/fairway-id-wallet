@@ -2,26 +2,65 @@ import SDK from "@hyperledger/identus-edge-agent-sdk";
 import { ShortFormDIDResolverSample } from "@/utils/index";
 import { logger } from "@/utils/logger";
 import { config, MEDIATOR_URL } from "@/config";
+import { connectPluto } from "./pluto";
 
 export class AgentService {
   private apollo: SDK.Apollo;
-  private config: typeof config;
+  // FIXME: the type of logger shhould be fixed
   private logger: typeof logger;
+  private pluto: SDK.Pluto | null = null;
 
-  constructor(
-    apollo: SDK.Apollo,
-    config: typeof config,
-    logger: typeof logger
-  ) {
+  constructor(apollo: SDK.Apollo, logger: typeof logger) {
     this.apollo = apollo;
     this.config = config;
     this.logger = logger;
   }
 
+  async initializePluto(forceNew: boolean): Promise<SDK.Pluto | null> {
+    this.logger.log("AgentService", "Initializing Pluto");
+    if (!this.pluto || forceNew) {
+      this.pluto = await connectPluto(forceNew);
+    }
+    this.logger.log("AgentService", "Pluto initialized", this.pluto);
+    return this.pluto;
+  }
+
+  async startAgent(
+    seed: SDK.Domain.Seed,
+    forceNew: boolean = false
+  ): Promise<SDK.Agent> {
+    this.logger.log("Agent", "Starting agent service");
+    try {
+      if (!this.pluto) {
+        await this.initializePluto(forceNew);
+      }
+      const agentDependencies = await this.buildAgentDependencies(this.pluto!);
+      const mediator = agentDependencies.mediatorDID;
+      if (!mediator) {
+        throw new Error("Mediator not available");
+      }
+      const agent = SDK.Agent.initialize({
+        mediatorDID: mediator,
+        pluto: this.pluto!,
+        api: agentDependencies.api,
+        apollo: agentDependencies.apollo,
+        castor: agentDependencies.castor,
+        mercury: agentDependencies.mercury,
+        seed,
+      });
+      await agent.start();
+      this.setupMessageHandlers(agent, this.pluto!);
+      this.logger.log("Agent", "Agent started successfully");
+      return agent;
+    } catch (err) {
+      this.logger.error("Agent", "Failed to start agent", err);
+      throw err;
+    }
+  }
+
   async fetchMediatorDID(
-    mediatorEndpoint: string,
-    didMethod: string
-  ): Promise<SDK.Domain.DID> {
+    mediatorEndpoint: string
+  ): Promise<SDK.Domain.DID | null> {
     this.logger.log("Agent", `Fetching mediator DID from: ${mediatorEndpoint}`);
     try {
       const response = await fetch(`${mediatorEndpoint}/did`, {
@@ -40,13 +79,8 @@ export class AgentService {
       return did;
     } catch (err) {
       this.logger.error("Agent", "Error fetching mediator DID", err);
-      const fallbackDID = SDK.Domain.DID.fromString(`did:${didMethod}:12345`);
-      this.logger.log(
-        "Agent",
-        "Using fallback mediator DID",
-        fallbackDID.toString()
-      );
-      return fallbackDID;
+      this.logger.log("Agent", "No mediator DID found");
+      return null;
     }
   }
 
@@ -63,7 +97,7 @@ export class AgentService {
 
   private async buildAgentDependencies(pluto: SDK.Domain.Pluto) {
     this.logger.log("Agent", "Creating agent dependencies");
-    const mediatorDID = await this.fetchMediatorDID(MEDIATOR_URL, "did");
+    const mediatorDID = await this.fetchMediatorDID(MEDIATOR_URL);
     const extraResolvers = [ShortFormDIDResolverSample];
     const api = new SDK.ApiImpl();
     const castor = new SDK.Castor(this.apollo, extraResolvers);
@@ -71,36 +105,6 @@ export class AgentService {
     const mercury = new SDK.Mercury(castor, didcomm, api);
     this.logger.log("Agent", "Agent dependencies created successfully");
     return { apollo: this.apollo, pluto, castor, mercury, mediatorDID, api };
-  }
-
-  async startAgent(
-    pluto: SDK.Pluto,
-    seed: SDK.Domain.Seed
-  ): Promise<SDK.Agent> {
-    this.logger.log("Agent", "Starting agent service");
-    try {
-      const agentDependencies = await this.buildAgentDependencies(pluto);
-      const agent = SDK.Agent.initialize({
-        mediatorDID: agentDependencies.mediatorDID,
-        pluto,
-        api: agentDependencies.api,
-        apollo: agentDependencies.apollo,
-        castor: agentDependencies.castor,
-        mercury: agentDependencies.mercury,
-        seed,
-      });
-      await agent.start();
-      const mediator = agent.currentMediatorDID;
-      if (!mediator) {
-        throw new Error("Mediator not available");
-      }
-      this.setupMessageHandlers(agent, pluto);
-      this.logger.log("Agent", "Agent started successfully");
-      return agent;
-    } catch (err) {
-      this.logger.error("Agent", "Failed to start agent", err);
-      throw err;
-    }
   }
 
   private setupMessageHandlers(agent: SDK.Agent, pluto: SDK.Pluto) {
@@ -177,6 +181,15 @@ export class AgentService {
   ): Promise<void> {
     const requestPresentation = SDK.RequestPresentation.fromMessage(message);
     const credentials = await agent.pluto.getAllCredentials();
+    // FIXME: This is a simplified selection of credentials
+    // In a real-world scenario, you would need to select the appropriate credential
+    // based on the requestPresentation and the available credentials.
+    // For example, you might want to check the schema or type of the credential
+    // against the requestPresentation.
+    // const credential = credentials.find((cred) => {
+    //   return cred.schemaId === requestPresentation.schemaId;
+    // });
+    // For now, we will just take the first credential available.
     const credential = credentials[0]; // Simplified selection
     if (!credential) throw new Error("No credentials available");
     const presentation = await agent.createPresentationForRequestProof(

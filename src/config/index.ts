@@ -51,4 +51,6 @@ export const config = {
   PLATFORM: process.env.REACT_APP_PLATFORM,
   DATADOG_APP_ID: process.env.REACT_APP_DATADOG_APP_ID,
   DATADOG_CLIENT_TOKEN: process.env.REACT_APP_DATADOG_CLIENT_TOKEN,
+  LOCAL_STORAGE_NAME:
+    process.env.REACT_APP_LOCAL_STORAGE_NAME || "fairway-wallet-storage",
 };

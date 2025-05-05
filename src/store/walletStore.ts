@@ -4,6 +4,7 @@ import { useAgentStore } from "./agentStore";
 import { WalletService } from "../services/wallet";
 import { apollo } from "../services/pluto";
 import SDK from "@hyperledger/identus-edge-agent-sdk";
+import { config } from "../config";
 
 interface WalletState {
   hasWallet: boolean;
@@ -38,9 +39,9 @@ export const useWalletStore = create<WalletState & WalletActions>(
     async checkWalletExists() {
       logger.log("Wallet", "Checking if wallet exists");
       try {
-        // const pluto = await useAgentStore.getState().initializePluto(false);
-        // const mediators = await pluto.getAllMediators();
-        const localStorageData = localStorage.getItem("fairway-wallet-storage");
+        const localStorageData = localStorage.getItem(
+          config.LOCAL_STORAGE_NAME
+        );
         const parsedData = localStorageData
           ? JSON.parse(localStorageData)
           : null;
@@ -67,7 +68,7 @@ export const useWalletStore = create<WalletState & WalletActions>(
           hasWallet: true,
         });
         localStorage.setItem(
-          "fairway-wallet-storage",
+          config.LOCAL_STORAGE_NAME,
           JSON.stringify({
             encryptedSeed,
             encryptedMnemonics,
@@ -95,14 +96,14 @@ export const useWalletStore = create<WalletState & WalletActions>(
           encryptedSeed,
         });
         await localStorage.setItem(
-          "fairway-wallet-storage",
+          config.LOCAL_STORAGE_NAME,
           JSON.stringify({
             encryptedSeed,
             encryptedMnemonics,
             encryptedPassword,
           })
         );
-        await useAgentStore.getState().startAgent();
+        await useAgentStore.getState().startAgent(true);
       } catch (err) {
         logger.error("Wallet", "Failed to recover wallet", err);
         throw err;

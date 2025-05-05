@@ -1,23 +1,18 @@
 import { create } from "zustand";
 import SDK from "@hyperledger/identus-edge-agent-sdk";
-import { connectPluto, removeAllDatabases } from "../services/pluto";
-import { logger } from "@/utils/logger";
 import { apollo } from "../services/pluto";
-import { config } from "../config";
 import { AgentService } from "../services/agent";
 import { CryptoUtils } from "../utils/crypto";
+import { logger } from "@/utils/logger";
+import { config } from "../config";
 
-// Define the state and actions interfaces
 interface AgentState {
   agent: SDK.Agent | null;
-  pluto: SDK.Pluto | null;
-  isAgentActive: boolean;
-  agentLoading: boolean; // New loading state
+  agentLoading: boolean;
 }
 
 interface AgentActions {
-  initializePluto: (forceNew: boolean) => Promise<SDK.Pluto>;
-  startAgent: () => Promise<SDK.Agent>;
+  startAgent: (forceNew?: boolean) => Promise<SDK.Agent>;
   stopAgent: () => Promise<void>;
   acceptCredentialOffer: (message: SDK.Domain.Message) => Promise<void>;
   acceptPresentationRequest: (message: SDK.Domain.Message) => Promise<void>;
@@ -25,59 +20,29 @@ interface AgentActions {
 }
 
 // Create AgentService instance with required dependencies
-const agentService = new AgentService(apollo, config, logger);
+const agentService = new AgentService(apollo, logger);
 
 // Create the agent store
 export const useAgentStore = create<AgentState & AgentActions>((set, get) => ({
   // Initial state
   agent: null,
-  pluto: null,
   isAgentActive: false,
-  agentLoading: false, // Initialize loading state
-
-  // Initialize Pluto (handles existing or new Pluto instances)
-  async initializePluto(forceNew) {
-    logger.log("Agent", "Initializing Pluto");
-    let pluto = get().pluto;
-    if (!pluto || forceNew) {
-      pluto = await connectPluto(forceNew);
-      set({ pluto });
-    } else {
-      await pluto.start();
-    }
-    logger.log("Agent", "Pluto initialized", pluto);
-    return pluto;
-  },
+  agentLoading: false,
 
   // Start the agent (preserves original logic including localStorage retrieval)
-  async startAgent() {
+  async startAgent(forceNew = false) {
     set({ agentLoading: true }); // Set loading to true when starting agent
     logger.log("Agent", "Starting agent");
     try {
       let agent = get().agent;
       if (agent) {
         await agent.start();
-        set({ isAgentActive: true, agentLoading: false });
+        set({ agentLoading: false });
         return agent;
       }
 
-      // Check if wallet exists by initializing Pluto and checking mediators
-      const pluto = await get().initializePluto(false); // Default to not forcing new
-      const mediators = await pluto.getAllMediators();
-      const hasLocalStorageData =
-        localStorage.getItem("fairway-wallet-storage") !== null;
-      const walletExists = mediators?.length > 0 && hasLocalStorageData;
-
-      // Re-initialize Pluto based on wallet existence
-      const finalPluto = await get().initializePluto(
-        walletExists ? false : true
-      );
-      if (!finalPluto) {
-        throw new Error("Failed to initialize Pluto");
-      }
-
-      // Retrieve encrypted seed from localStorage (as in original)
-      const localStorageData = localStorage.getItem("fairway-wallet-storage");
+      // Retrieve and decrypt seed from localStorage
+      const localStorageData = localStorage.getItem(config.LOCAL_STORAGE_NAME);
       const parsedLocalStorageData = localStorageData
         ? JSON.parse(localStorageData)
         : null;
@@ -86,7 +51,6 @@ export const useAgentStore = create<AgentState & AgentActions>((set, get) => ({
         throw new Error("No seed found in localStorage");
       }
 
-      // Decrypt the seed using config.SECRET_KEY
       const seedBytes = CryptoUtils.decrypt(encryptedSeed);
       const seed = { value: Buffer.from(seedBytes, "hex") };
       if (seed.value.length !== 64) {
@@ -96,15 +60,13 @@ export const useAgentStore = create<AgentState & AgentActions>((set, get) => ({
       }
 
       // Start the agent using AgentService
-      agent = await agentService.startAgent(finalPluto, seed);
-      set({ agent, isAgentActive: true, agentLoading: false });
-      logger.log("Agent", "Agent started successfully", agent);
+      agent = await agentService.startAgent(seed, forceNew);
+      set({ agent, agentLoading: false });
+      logger.log("AgentStore", "Agent started successfully", agent);
       return agent;
     } catch (err) {
-      logger.error("Agent", "Error starting agent", err);
-      const pluto = get().pluto;
-      if (pluto) await pluto.stop();
-      set({ agentLoading: false }); // Reset loading state on error
+      logger.error("AgentStore", "Error starting agent", err);
+      set({ agentLoading: false });
       throw err;
     }
   },
@@ -113,15 +75,11 @@ export const useAgentStore = create<AgentState & AgentActions>((set, get) => ({
   async stopAgent() {
     logger.log("Agent", "Stopping agent");
     try {
-      const { agent, pluto } = get();
+      const { agent } = get();
       if (agent) {
         await agent.stop();
       }
-      if (pluto) {
-        await pluto.stop();
-        await removeAllDatabases();
-      }
-      set({ agent: null, pluto: null, isAgentActive: false });
+      set({ agent: null });
       logger.log("Agent", "Agent stopped successfully");
     } catch (err) {
       logger.error("Agent", "Error stopping agent", err);
