@@ -2,9 +2,9 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { BellIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { Avatar } from "@nextui-org/react";
+import { Avatar } from "@heroui/react";
 import usePageTitles from "@/hooks/usePageTitles";
-import { Button } from "@nextui-org/button";
+import { Button } from "@heroui/button";
 
 export default function Header() {
   const router = useRouter();

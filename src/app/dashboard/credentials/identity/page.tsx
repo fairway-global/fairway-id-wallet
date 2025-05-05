@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { FingerPrintIcon, ShareIcon } from "@heroicons/react/24/outline";
-import { Button } from "@nextui-org/button";
+import { Button } from "@heroui/button";
 import dayjs from "dayjs";
 import IdentityCredential from "@/components/IdentityCredential";
 import { useCredentialStore } from "../../../../store/credentialStore";

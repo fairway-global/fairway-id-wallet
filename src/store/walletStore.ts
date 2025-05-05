@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { logger } from "@/utils/logger";
 import { useAgentStore } from "./agentStore";
-import { CryptoUtils } from "@/utils/crypto";
-import { recoverSeedFromMnemonics } from "../utils/walletUtils";
+import { WalletService } from "../services/wallet";
+import { apollo } from "../services/pluto";
 import SDK from "@hyperledger/identus-edge-agent-sdk";
 
 interface WalletState {
@@ -25,6 +25,8 @@ interface WalletActions {
   restoreWallet: (backup: SDK.Domain.Backup.Schema) => Promise<void>;
 }
 
+const walletService = new WalletService(apollo);
+
 export const useWalletStore = create<WalletState & WalletActions>(
   (set, get) => ({
     hasWallet: false,
@@ -36,13 +38,13 @@ export const useWalletStore = create<WalletState & WalletActions>(
     async checkWalletExists() {
       logger.log("Wallet", "Checking if wallet exists");
       try {
-        const pluto = await useAgentStore.getState().initializePluto(false);
-        const mediators = await pluto.getAllMediators();
+        // const pluto = await useAgentStore.getState().initializePluto(false);
+        // const mediators = await pluto.getAllMediators();
         const localStorageData = localStorage.getItem("fairway-wallet-storage");
         const parsedData = localStorageData
           ? JSON.parse(localStorageData)
           : null;
-        const walletExists = mediators.length > 0 && parsedData?.encryptedSeed;
+        const walletExists = parsedData?.encryptedSeed;
         set({ hasWallet: walletExists, checkingWallet: false });
         return walletExists;
       } catch (err) {
@@ -56,16 +58,8 @@ export const useWalletStore = create<WalletState & WalletActions>(
       logger.log("Wallet", "Generating seed phrase");
       try {
         if (!password) throw new Error("Password is required");
-        // Call server-side API to generate seed and mnemonics
-        const response = await fetch("/api/wallet/generate-seed", {
-          method: "POST",
-        });
-        const { mnemonics, seed } = await response.json();
-        if (!response.ok) throw new Error("Failed to generate seed phrase");
-
-        const encryptedSeed = CryptoUtils.encrypt(seed);
-        const encryptedMnemonics = CryptoUtils.encrypt(mnemonics);
-        const encryptedPassword = CryptoUtils.encrypt(password);
+        const { encryptedSeed, encryptedMnemonics, encryptedPassword } =
+          walletService.generateSeedPhrase(password);
         set({
           encryptedSeed,
           encryptedMnemonics,
@@ -80,7 +74,7 @@ export const useWalletStore = create<WalletState & WalletActions>(
             encryptedPassword,
           })
         );
-        return mnemonics;
+        return encryptedMnemonics;
       } catch (err) {
         logger.error("Wallet", "Failed to generate seed phrase", err);
         throw err;
@@ -92,20 +86,15 @@ export const useWalletStore = create<WalletState & WalletActions>(
       try {
         if (!password || password.length < 8)
           throw new Error("Invalid password");
-        const mnemonicArray = mnemonics.split(" ");
-        if (mnemonicArray.length !== 12)
-          throw new Error("Mnemonic phrase must contain exactly 12 words");
-        const seed = recoverSeedFromMnemonics(mnemonicArray);
-        const encryptedMnemonics = CryptoUtils.encrypt(mnemonics);
-        const encryptedSeed = CryptoUtils.encrypt(seed.value.toString("hex"));
-        const encryptedPassword = CryptoUtils.encrypt(password);
+        const { encryptedSeed, encryptedMnemonics, encryptedPassword, seed } =
+          walletService.recoverWallet(mnemonics, password);
         set({
           hasWallet: true,
           encryptedPassword,
           encryptedMnemonics,
           encryptedSeed,
         });
-        localStorage.setItem(
+        await localStorage.setItem(
           "fairway-wallet-storage",
           JSON.stringify({
             encryptedSeed,
@@ -123,11 +112,13 @@ export const useWalletStore = create<WalletState & WalletActions>(
     async signIn(password) {
       logger.log("Wallet", "Signing in");
       try {
-        const { encryptedPassword, encryptedSeed } = get();
+        const { encryptedPassword } = get();
         if (!encryptedPassword) throw new Error("No wallet found");
-        const storedPassword = CryptoUtils.decrypt(encryptedPassword);
-        if (storedPassword !== password) throw new Error("Incorrect password");
-        if (!encryptedSeed) throw new Error("No seed");
+        const isValid = walletService.verifyPassword(
+          encryptedPassword,
+          password
+        );
+        if (!isValid) throw new Error("Incorrect password");
         await useAgentStore.getState().startAgent();
         return true;
       } catch (err) {
@@ -170,7 +161,7 @@ export const useWalletStore = create<WalletState & WalletActions>(
     async backupWallet() {
       logger.log("Agent", "Backing up wallet");
       try {
-        const agent = await useAgentStore.getState().agent;
+        const agent = useAgentStore.getState().agent;
         if (!agent) throw new Error("Agent not initialized");
         return await agent.pluto.backup("0.0.1");
       } catch (err) {
@@ -179,10 +170,10 @@ export const useWalletStore = create<WalletState & WalletActions>(
       }
     },
 
-    async restoreWallet(backup: SDK.Domain.Backup.Schema) {
+    async restoreWallet(backup) {
       logger.log("Agent", "Restoring wallet");
       try {
-        const agent = await useAgentStore.getState().agent;
+        const agent = useAgentStore.getState().agent;
         if (!agent) throw new Error("Agent not initialized");
         await agent.pluto.restore(backup);
       } catch (err) {

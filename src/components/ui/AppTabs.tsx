@@ -1,6 +1,6 @@
 "use client";
 import React, { Key, useCallback, useEffect } from "react";
-import { Tabs, Tab } from "@nextui-org/react";
+import { Tabs, Tab } from "@heroui/react";
 import { CameraIcon, ChartPieIcon, CogIcon } from "@heroicons/react/24/outline";
 import { useTabs } from "@/context/TabsContext";
 import Credentials from "@/app/dashboard/page";

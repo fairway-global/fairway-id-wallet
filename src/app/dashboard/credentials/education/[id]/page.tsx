@@ -8,7 +8,7 @@ import {
   FingerPrintIcon,
   ShareIcon,
 } from "@heroicons/react/24/outline";
-import { Button } from "@nextui-org/button";
+import { Button } from "@heroui/button";
 import EducationCredential from "@/components/EducationCredential";
 import dayjs from "dayjs";
 import useStore from "../../../../../store/store";

@@ -1,10 +1,10 @@
 "use client";
 
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import { Input } from "@nextui-org/react";
+import { Input } from "@heroui/react";
 import React, { useMemo, useState } from "react";
 import FWLogoBox from "@/components/ui/FWLogoBox";
-import { Button } from "@nextui-org/button";
+import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ErrorIcon } from "@/components/ui/ErrorIcon";

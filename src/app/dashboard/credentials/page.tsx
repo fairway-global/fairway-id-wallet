@@ -4,7 +4,7 @@ import { IEducationCredential } from "@/utils/types";
 import EducationCredential from "@/components/EducationCredential";
 import IdentityCredential from "@/components/IdentityCredential";
 import NationalIDBadge from "@/components/ui/NationIDBadge";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useCredentialStore } from "../../../store/credentialStore";
 

@@ -2,19 +2,23 @@
 import Image from "next/image";
 import {
   ExclamationCircleIcon,
-  CheckBadgeIcon,
   ArrowPathIcon,
+  CheckBadgeIcon,
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { Button } from "@nextui-org/button";
+import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
-import useStore from "../store/store";
 
 const IDVerificationResult = () => {
   const router = useRouter();
   const [isSuccessful] = useState(true);
-  const { identityCredential } = useStore();
+  // FIXME: This should be replaced with the actual state management solution
+  const identityCredential = {
+    fullName: "John Doe",
+    birthDate: "01/01/1990",
+    providerIdentifier: "123456789",
+  };
 
   const onEditDetails = () => {
     console.log("on Edit clicked");

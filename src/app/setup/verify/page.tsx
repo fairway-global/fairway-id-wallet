@@ -1,8 +1,8 @@
 "use client";
 
 import FWLogoBox from "@/components/ui/FWLogoBox";
-import { Button } from "@nextui-org/button";
-import { Input } from "@nextui-org/react";
+import { Button } from "@heroui/button";
+import { Input } from "@heroui/react";
 import { useMemo, useState } from "react";
 import { phrases } from "@/utils/data";
 import { useRouter } from "next/navigation";

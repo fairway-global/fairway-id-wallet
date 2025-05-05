@@ -2,7 +2,7 @@
 
 import { ExpandableBox } from "@/components/ui/ExpandableBox";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input } from "@heroui/react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ErrorIcon } from "@/components/ui/ErrorIcon";

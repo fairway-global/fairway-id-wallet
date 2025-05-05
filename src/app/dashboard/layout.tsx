@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Key } from "react";
-import { Tabs, Tab } from "@nextui-org/react";
+import { Tabs, Tab } from "@heroui/react";
 import { usePathname, useRouter } from "next/navigation";
 import { CameraIcon, ChartPieIcon, CogIcon } from "@heroicons/react/24/outline";
 import Header from "@/components/ui/Header";

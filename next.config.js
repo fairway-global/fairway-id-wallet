@@ -1,12 +1,27 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  assetPrefix: process.env.NODE_ENV === "production" ? "/." : "",
-  trailingSlash: true,
-  // output: "export",
-  distDir: "build",
-  eslint: {
-    ignoreDuringBuilds: process.env.NODE_ENV === "production",
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        fs: false,
+        crypto: false,
+        stream: false,
+        path: false,
+      };
+    }
+    return config;
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/cloud-agent/:path*",
+        destination: "http://localhost:8085/:path*",
+      },
+      {
+        source: "/didcomm",
+        destination: "http://localhost:8090",
+      },
+    ];
   },
 };
 

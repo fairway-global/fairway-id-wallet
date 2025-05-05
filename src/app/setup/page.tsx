@@ -1,7 +1,7 @@
 "use client";
 
 import FWLogoBox from "@/components/ui/FWLogoBox";
-import { Button } from "@nextui-org/button";
+import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
 import { phrases } from "../../utils/data";
 import { toast } from "sonner";

@@ -3,7 +3,7 @@ import BlurredCard from "./ui/BlurredCard";
 import { FC } from "react";
 import { EyeSlashIcon, QrCodeIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
-import { Avatar, Button } from "@nextui-org/react";
+import { Avatar, Button } from "@heroui/react";
 import { useCredentialStore } from "../store/credentialStore";
 
 interface IdentityCredentialProps {

@@ -10,7 +10,7 @@ import {
   BuildingOffice2Icon,
   DocumentArrowDownIcon,
 } from "@heroicons/react/24/outline";
-import { Button } from "@nextui-org/button";
+import { Button } from "@heroui/button";
 
 export default function WorkCredentialDetail() {
   const [workCredential, setWorkCredential] = useState<IWorkCredential>(

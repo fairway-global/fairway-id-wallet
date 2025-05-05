@@ -2,7 +2,7 @@
 
 import FWLogoBox from "@/components/ui/FWLogoBox";
 import { useRouter } from "next/navigation";
-import { Button } from "@nextui-org/button";
+import { Button } from "@heroui/button";
 import { TrophyIcon } from "@heroicons/react/24/outline";
 
 const FinalSetup = () => {

@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { DatePicker, Input } from "@nextui-org/react";
+import { DatePicker, Input } from "@heroui/react";
 import { FormEvent, useState } from "react";
-import { Button } from "@nextui-org/button";
+import { Button } from "@heroui/button";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
 import { parseDate, CalendarDate } from "@internationalized/date";
