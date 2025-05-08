@@ -1,6 +1,7 @@
-import { Providers } from "./providers";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { MobileProvider } from "../context/MobileContext";
+import { Provider } from "./provider";
 
 export default function RootLayout({
   children,
@@ -11,7 +12,9 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body>
         <Toaster />
-        <Providers>{children}</Providers>
+        <MobileProvider>
+          <Provider>{children}</Provider>
+        </MobileProvider>
       </body>
     </html>
   );

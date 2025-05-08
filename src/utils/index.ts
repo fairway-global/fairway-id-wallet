@@ -68,3 +68,8 @@ export class ShortFormDIDResolverSample implements SDK.Domain.DIDResolver {
     return resolved;
   }
 }
+
+export const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString();
+};

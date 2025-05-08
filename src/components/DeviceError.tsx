@@ -1,6 +1,6 @@
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 
-export default function ErrorPage() {
+export default function DeviceError() {
   return (
     <div className="flex items-center justify-center bg-[#1A2238] h-screen">
       <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md mx-auto flex flex-col items-center">

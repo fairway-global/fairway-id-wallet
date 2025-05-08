@@ -40,7 +40,7 @@ export const connectPluto = async (forceNew = false) => {
     name: config.PLUTO_DB_NAME ?? "fairway-wallet",
     storage: Storage,
     password: Buffer.from(config.PLUTO_PASSWD).toString("hex"),
-    ignoreDuplicate: false,
+    ignoreDuplicate: true,
   });
   console.log("Store initialized with configuration:", store);
 

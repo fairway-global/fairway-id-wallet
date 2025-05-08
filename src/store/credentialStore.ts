@@ -14,7 +14,7 @@ export interface Credential {
 
 interface CredentialState {
   credentials: Credential[];
-  fetchCredentials: () => Promise<void>;
+  fetchCredentials: () => Promise<Credential[]>;
 }
 
 export const useCredentialStore = create<CredentialState>((set) => ({
@@ -57,6 +57,7 @@ export const useCredentialStore = create<CredentialState>((set) => ({
         };
       });
       set({ credentials });
+      return credentials;
     } catch (err) {
       logger.error("Credentials", "Failed to fetch credentials", err);
       throw err;
