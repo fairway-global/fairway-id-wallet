@@ -157,7 +157,6 @@ export default function Settings() {
           <div className="w-full mt-4">
             <Button
               className={"self-center mt-auto mb-0 w-full bg-fwNewRed"}
-              // FIXME: enable after demo
               isDisabled={isResetLoading}
               onPress={onReset}
               isLoading={isResetLoading}

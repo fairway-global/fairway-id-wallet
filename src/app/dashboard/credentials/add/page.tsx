@@ -9,7 +9,6 @@ import { parseDate, CalendarDate } from "@internationalized/date";
 import { useRouter } from "next/navigation";
 import useLoading from "@/hooks/useLoading";
 import { IEducationCredential } from "../../../../utils/types";
-import useStore from "../../../../store/store";
 import { toast } from "sonner";
 
 const BIN_ID = "67ac8637ad19ca34f8007afc"; // Replace with your JSONBin.io Bin ID

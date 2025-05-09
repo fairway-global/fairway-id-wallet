@@ -74,13 +74,6 @@ export default function IdentityCredentialDetail() {
           className={"mt-2"}
         />
         <HR />
-        <div className="flex flex-col items-start gap-2 w-full">
-          <p className="text-xs">ID Provider</p>
-          <p className="text-[20px] font-bold">
-            {credential?.idProvider ?? ""}
-          </p>
-        </div>
-        <HR />
         <div className="grid grid-cols-2 w-full">
           <div className="flex flex-col items-start gap-2 w-full">
             <p className="text-xs">ISSUED DATE</p>
@@ -97,25 +90,20 @@ export default function IdentityCredentialDetail() {
             </div>
           )}
         </div>
-        <div className="grid grid-cols-2 w-full">
+        <div className="grid grid-cols-1 w-full">
           {Object.entries(credential.claims).length === 0 ? (
             <p className="text-sm text-gray-500">No attributes available</p>
           ) : (
             Object.entries(credential.claims).map(([key, value]) => (
-              <>
-                <div
-                  key={key}
-                  className="flex flex-col items-start gap-2 w-full"
-                >
-                  <p className="text-xs">
-                    {key.replace(/([A-Z])/g, " $1").trim()}
-                  </p>
-                  <p className="text-[20px] font-bold">
-                    {renderClaimValue(value)}
-                  </p>
-                </div>
+              <div key={key} className="flex flex-col items-start w-full">
+                <p className="text-xs">
+                  {key.replace(/([A-Z])/g, " $1").trim()}
+                </p>
+                <p className="text-[20px] font-bold">
+                  {renderClaimValue(value)}
+                </p>
                 <HR key={key} />
-              </>
+              </div>
             ))
           )}
         </div>

@@ -40,7 +40,10 @@ const usePageTitles = (
     const route = routesToTitles.find(({ pattern }) => pattern.test(pathname));
     return {
       title: route?.title || "Dashboard",
-      showBackBtn: route?.showBackBtn === false ? false : true,
+      showBackBtn:
+        route?.showBackBtn === false || route?.title === "Dashboard"
+          ? false
+          : true,
     };
   }, [pathname]);
   const { title, showBackBtn } = route;
