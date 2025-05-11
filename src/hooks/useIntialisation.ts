@@ -53,7 +53,7 @@ import { toast } from "sonner";
 export function useInitialization() {
   const router = useRouter();
   const { checkWallet } = useWalletStore();
-  const { startAgent, agentLoading } = useAgentStore();
+  const { agent, startAgent } = useAgentStore();
   const [isInitializing, setIsInitializing] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -63,11 +63,13 @@ export function useInitialization() {
         const { success, error } = await checkWallet();
         if (success) {
           console.log("Wallet found, starting agent...");
-          await startAgent();
-          router.push("/dashboard"); // Navigate to dashboard on success
-        } else {
-          console.log("No wallet detected.");
-          toast.info("Please create or recover a wallet to proceed.");
+          const agent = await startAgent();
+          if (agent?.state === "running") {
+            router.push("/dashboard"); // Navigate to dashboard on success
+          }
+        } else if (error) {
+          console.log("No wallet detected.", error);
+          toast.info("Please create or recover a wallet to proceed:" + error);
           router.push("/"); // Navigate to home if no wallet
         }
       } catch (err) {
@@ -76,14 +78,15 @@ export function useInitialization() {
         toast.error("Initialization failed. Please try again.");
         router.push("/"); // Navigate to home on error
       } finally {
+        console.log("Initialization complete");
         setIsInitializing(false);
       }
     };
 
-    if (typeof window !== "undefined") {
+    if (!agent) {
       initialize();
     }
-  }, [checkWallet, startAgent, router]);
+  }, []);
 
   return { isInitializing, error };
 }

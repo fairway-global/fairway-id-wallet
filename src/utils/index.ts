@@ -73,3 +73,12 @@ export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   return date.toLocaleDateString();
 };
+
+export const isValidUrl = (url: string) => {
+  try {
+    new URL(url);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};

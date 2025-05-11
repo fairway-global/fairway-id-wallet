@@ -2,19 +2,21 @@
 import { useEffect, useState } from "react";
 import IdentityCredential from "@/components/IdentityCredential";
 import NationalIDBadge from "@/components/ui/NationIDBadge";
-import { Button, Input } from "@heroui/react";
+import { Button, Input, useDisclosure } from "@heroui/react";
 import { useCredentialStore } from "../../../store/credentialStore";
 import { useAgentStore } from "../../../store/agentStore";
 import { ModalContainer } from "../../../components/ui/Modal";
 import { toast } from "sonner";
+import { isValidUrl } from "../../../utils";
 
 export default function Credentials() {
   const { fetchCredentials } = useCredentialStore();
   const { acceptInvitationUrl } = useAgentStore();
   const [credentials, setCredentials] = useState<any[]>([]);
   const { agent } = useAgentStore();
-  const [showAddModal, setShowAddModal] = useState(false);
   const [invitationUrl, setInvitationUrl] = useState("");
+  const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure();
+  const [inviationLoading, setInviationLoading] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -32,29 +34,34 @@ export default function Credentials() {
   }, [fetchCredentials, agent]);
 
   const onAddCredential = () => {
-    setShowAddModal(true);
+    onOpen();
   };
 
   const onSave = async () => {
-    if (!invitationUrl) {
+    if (!invitationUrl || !isValidUrl(invitationUrl)) {
+      console.log("Invalid URL:", !isValidUrl(invitationUrl));
       toast.error("Please enter a valid invitation URL.");
       return;
     }
     try {
+      setInviationLoading(true);
       await acceptInvitationUrl(invitationUrl);
       toast.success("Credential added successfully.");
-      setShowAddModal(false);
+      onClose();
       setInvitationUrl("");
     } catch (error) {
       console.error("Error adding credential:", error);
       toast.error("Failed to add credential. Please try again.");
-      setShowAddModal(false);
+      onClose();
       setInvitationUrl("");
+    } finally {
+      setInviationLoading(false);
     }
   };
 
   const onCancel = () => {
-    setShowAddModal(false);
+    console.log("Cancelled");
+    onClose();
     setInvitationUrl("");
   };
 
@@ -73,29 +80,34 @@ export default function Credentials() {
       >
         Add New Credential
       </Button>
-      {showAddModal && (
-        <ModalContainer
-          title="Add New Credential"
-          isOpen={showAddModal}
-          onSave={onSave}
-          onCancel={onCancel}
-        >
-          <p className="text-center text-white">
-            Please enter the invitation URL to add a new credential.
-          </p>
-          <Input
-            className="w-full"
-            label="Enter invitation URL"
-            type="text"
-            variant="flat"
-            isRequired={true}
-            value={invitationUrl}
-          />
-          <p className="text-center text-white">
-            You can get the invitation URL from your agent.
-          </p>
-        </ModalContainer>
-      )}
+      <ModalContainer
+        title="Add New Credential"
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        onSave={onSave}
+        onCancel={onCancel}
+        isSubmitting={inviationLoading}
+      >
+        <p className="text-center text-white">
+          Please enter the invitation URL to add a new credential.
+        </p>
+        <Input
+          className="w-full"
+          label="Enter invitation URL"
+          type="text"
+          variant="flat"
+          isRequired={true}
+          onChange={(e) => setInvitationUrl(e.target.value)}
+          onFocusChange={(isFocused?: boolean) =>
+            !isFocused ? setInvitationUrl("") : {}
+          }
+          placeholder="https://example.com/?oob=sdad123"
+          value={invitationUrl}
+        />
+        <p className="text-center text-white">
+          You can get the invitation URL from your issuer.
+        </p>
+      </ModalContainer>
     </div>
   );
 }

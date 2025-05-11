@@ -1,14 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import axios from "axios"; // Make sure axios is imported
-import jsQR from "jsqr"; // Ensure jsQR is installed and imported correctly
+import jsQR from "jsqr";
+import { useRouter } from "next/navigation";
+import { useAgentStore } from "../../../store/agentStore";
+import { toast } from "sonner";
 
 export default function Scan() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const cameraScannerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const router = useRouter();
+  const { acceptInvitationUrl } = useAgentStore();
 
   useEffect(() => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -63,30 +67,34 @@ export default function Scan() {
             );
 
             if (codeData) {
-              console.log("code data", codeData);
-              // let url = codeData.data;
-              // try {
-              //   const { data } = await axios.get(`${codeData.data}/fetch`);
-              //   url = data.long_url;
-              // } catch (err) {
-              //   console.error("Error fetching URL:", err);
-              //   return;
-              // }
-              // const { search, searchParams } = new URL(url);
-              // if (searchParams.get("_oob")) {
-              //   console.log("search", search);
-              //   if (cameraElement) {
-              //     cameraElement.pause();
-              //   }
-              // } else {
-              //   console.error(
-              //     new Error(`oob not found on ${JSON.stringify(searchParams)}`),
-              //     {
-              //       componentStack: "scanner",
-              //       digest: "on fetching URL params",
-              //     }
-              //   );
-              // }
+              const codeString = codeData.data;
+              console.log("code string", codeString);
+              stopCamera(cameraStream);
+              if (cameraScannerIntervalRef.current) {
+                clearInterval(cameraScannerIntervalRef.current);
+              }
+              // Verify if the codeString is a valid URL
+              const isValidUrl = (url: string) => {
+                try {
+                  new URL(url);
+                  return true;
+                } catch (e) {
+                  return false;
+                }
+              };
+              if (isValidUrl(codeString)) {
+                toast.success("QR code scanned successfully!");
+                try {
+                  await acceptInvitationUrl(codeString);
+                  toast.success("Credential added successfully.");
+                  router.push("/dashboard/credentials");
+                } catch (error) {
+                  console.error("Error adding credential:", error);
+                  toast.error("Failed to add credential. Please try again.");
+                }
+              } else {
+                toast.error("Invalid QR code. Please try again.");
+              }
             }
           }
         }, 1000);
@@ -109,7 +117,7 @@ export default function Scan() {
 
   return (
     <div className="bg-black min-h-screen">
-      <h1 className="text-white text-4xl p-4">Scan Page</h1>
+      <h1 className="text-white text-xl p-4">Scan Page</h1>
       <video
         ref={videoRef}
         style={{
