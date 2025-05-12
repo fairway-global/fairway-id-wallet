@@ -40,7 +40,7 @@ export const config = {
   DEBUG: process.env.REACT_APP_DEBUG === "true" ? true : false,
   SECRET_KEY: process.env.REACT_APP_SECRET_KEY || "BETAMWESANMISTIR",
   PLUTO_PASSWD: new Uint8Array(32).fill(
-    parseInt(process.env.REACT_APP_PLUTO_PASSWD)
+    parseInt(process.env.REACT_APP_PLUTO_PASSWD || "0") || 0
   ),
   PLUTO_DB_NAME: process.env.REACT_APP_PLUTO_DB_NAME,
   MEDIATOR_DID: process.env.REACT_APP_MEDIATOR_DID || "did:example:mediator",

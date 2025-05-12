@@ -1,6 +1,6 @@
 import SDK from "@hyperledger/identus-edge-agent-sdk";
-import { config } from "src/config";
 import { apollo, castor } from "./pluto";
+import { config } from "../config";
 
 export async function createDID(services: SDK.Domain.Service[]) {
   const mnemonics = apollo.createRandomMnemonics();

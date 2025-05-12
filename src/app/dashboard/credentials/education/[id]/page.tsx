@@ -11,16 +11,14 @@ import {
 import { Button } from "@heroui/button";
 import EducationCredential from "@/components/EducationCredential";
 import dayjs from "dayjs";
-import useStore from "../../../../../store/store";
-import setEducationCredentials from "../../../../../store/store";
 import { useParams } from "next/navigation";
 
 export default function EducationCredentialDetail() {
   const params = useParams();
   const id = params?.id;
-  const { educationCredentials } = useStore();
 
   const [copied, setCopied] = useState(false);
+  const [educationCredentials] = useState<IEducationCredential[]>([]);
 
   const handleCopy = async () => {
     if (educationCredential) {
@@ -129,14 +127,14 @@ export default function EducationCredentialDetail() {
           <Button
             size="sm"
             className={"flex justify-center text-white bg-fwNewGreen w-full"}
-            onPress={() => {
-              if (!educationCredential.signed) {
-                setEducationCredentials((educationCredential) => ({
-                  ...educationCredential,
-                  signed: true,
-                }));
-              }
-            }}
+            // onPress={() => {
+            //   if (!educationCredential.signed) {
+            //     setEducationCredentials((educationCredential) => ({
+            //       ...educationCredential,
+            //       signed: true,
+            //     }));
+            //   }
+            // }}
           >
             {educationCredential.signed ? (
               <>

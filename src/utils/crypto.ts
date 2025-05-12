@@ -4,7 +4,8 @@ import { config } from "../config";
 export class CryptoUtils {
   static encrypt(data: string): string {
     try {
-      return sjcl.encrypt(config.SECRET_KEY, data);
+      // FIXME: check if this works
+      return JSON.stringify(sjcl.encrypt(config.SECRET_KEY, data));
     } catch (error) {
       throw new Error(`Encryption failed: ${error?.message}`);
     }

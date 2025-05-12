@@ -32,7 +32,11 @@ export const useCredentialStore = create<CredentialState>((set) => ({
           const claimObject = vc.claims[0];
           if (claimObject && typeof claimObject === "object") {
             Object.entries(claimObject).forEach(([key, disclosure]) => {
-              if (disclosure && disclosure.value) {
+              if (
+                disclosure &&
+                typeof disclosure === "object" &&
+                "value" in disclosure
+              ) {
                 claims[key] = disclosure.value;
               }
             });

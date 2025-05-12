@@ -10,16 +10,18 @@ export default function IdentityCredentialDetail() {
   const { credentials } = useCredentialStore();
 
   const identityCredential = credentials.find(
-    (credential) => credential.type === "IdentityCredential"
+    (credential) => credential?.type === "Ethiopian NationalID Fayda"
   );
-
   const HR = () => (
     <hr className="h-px my-4 bg-gray-400 border-0 dark:bg-gray-400 w-full" />
   );
 
   return identityCredential ? (
     <div className="flex flex-col items-center text-white">
-      <IdentityCredential className={"w-full"} />
+      <IdentityCredential
+        credential={identityCredential}
+        className={"w-full"}
+      />
       <div
         className={`rounded-b-2xl p-4 flex flex-col items-center h-auto bg-[rgba(255,255,255,0.15)] backdrop-blur-xl border border-[rgba(255,255,255,0.2)] shadow-lg w-[80%]`}
       >
@@ -34,7 +36,7 @@ export default function IdentityCredentialDetail() {
         <div className="flex flex-col items-start gap-2 w-full">
           <p className="text-xs">ID Provider</p>
           <p className="text-[20px] font-bold">
-            {identityCredential?.idProvider ?? ""}
+            {identityCredential?.issuanceDate ?? ""}
           </p>
         </div>
         <HR />
@@ -42,14 +44,14 @@ export default function IdentityCredentialDetail() {
           <div className="flex flex-col items-start gap-2 w-full">
             <p className="text-xs">GENDER</p>
             <p className="text-[20px] font-bold">
-              {identityCredential?.gender ?? ""}
+              {identityCredential?.issuanceDate ?? ""}
             </p>
           </div>
           <div className="flex flex-col items-end gap-2 w-full">
             <p className="text-xs">DATE OF BIRTH</p>
             <p className="text-[20px] font-bold">
-              {identityCredential?.birthDate
-                ? dayjs(identityCredential.birthDate).format("DD.MM.YYYY")
+              {identityCredential?.issuanceDate
+                ? dayjs(identityCredential.issuanceDate).format("DD.MM.YYYY")
                 : ""}
             </p>
           </div>
@@ -58,12 +60,14 @@ export default function IdentityCredentialDetail() {
         <div className="grid grid-cols-2 w-full">
           <div className="flex flex-col items-start gap-2 w-full">
             <p className="text-xs">CITY</p>
-            <p className="text-[20px] font-bold">{identityCredential.city}</p>
+            <p className="text-[20px] font-bold">
+              {identityCredential.issuanceDate}
+            </p>
           </div>
           <div className="flex flex-col items-end gap-2 w-full">
             <p className="text-xs">COUNTRY</p>
             <p className="text-[20px] font-bold">
-              {identityCredential.country}
+              {identityCredential.issuanceDate}
             </p>
           </div>
         </div>
@@ -72,17 +76,17 @@ export default function IdentityCredentialDetail() {
           <div className="flex flex-col items-start gap-2 w-full">
             <p className="text-xs">ISSUED DATE</p>
             <p className="text-[20px] font-bold">
-              {identityCredential.issuedDate}
+              {identityCredential.issuanceDate}
             </p>
           </div>
           <div className="flex flex-col items-end gap-2 w-full">
             <p className="text-xs">VALID</p>
             <p className="text-[20px] font-bold">
-              {identityCredential.expiryDate}
+              {identityCredential.issuanceDate}
             </p>
           </div>
         </div>
-        {identityCredential.status === "pending" && (
+        {identityCredential.issuanceDate === "pending" && (
           <>
             <HR />
             <p className="text-gray-200">Identity Credential Received</p>
@@ -93,13 +97,13 @@ export default function IdentityCredentialDetail() {
           <Button
             size="sm"
             className={"flex justify-center text-white bg-fwNewGreen w-full"}
-            onPress={() => {
-              if (!identityCredential.status) {
-                setIdentityCredential({ ...identityCredential, signed: true });
-              }
-            }}
+            // onPress={() => {
+            //   if (!identityCredential.status) {
+            //     setIdentityCredential({ ...identityCredential, signed: true });
+            //   }
+            // }}
           >
-            {identityCredential.signed ? (
+            {identityCredential.issuanceDate ? (
               <>
                 <FingerPrintIcon className="h-4 w-4 text-white" />
                 Accept

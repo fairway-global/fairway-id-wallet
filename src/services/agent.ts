@@ -1,16 +1,16 @@
 import SDK from "@hyperledger/identus-edge-agent-sdk";
 import { ShortFormDIDResolverSample } from "@/utils/index";
-import { logger } from "@/utils/logger";
 import { config, MEDIATOR_URL } from "@/config";
 import { connectPluto } from "./pluto";
 
 export class AgentService {
   private apollo: SDK.Apollo;
   // FIXME: the type of logger shhould be fixed
-  private logger: typeof logger;
+  private logger: any;
+  private config: any;
   private pluto: SDK.Pluto | null = null;
 
-  constructor(apollo: SDK.Apollo, logger: typeof logger) {
+  constructor(apollo: SDK.Apollo, logger) {
     this.apollo = apollo;
     this.config = config;
     this.logger = logger;
@@ -110,7 +110,7 @@ export class AgentService {
   private setupMessageHandlers(agent: SDK.Agent, pluto: SDK.Pluto) {
     try {
       agent.addListener(SDK.ListenerKey.MESSAGE, async (messages) => {
-        for (const message of messages) {
+        for (const message of messages as SDK.Domain.Message[]) {
           if (message instanceof SDK.Domain.Message) {
             if (message.piuri === SDK.ProtocolType.DidcommOfferCredential) {
               this.logger.log("Agent", "Received credential offer", message);
