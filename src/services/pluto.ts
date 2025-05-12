@@ -38,7 +38,7 @@ export const connectPluto = async (forceNew = false) => {
 
   const store = new SDK.Store({
     name: config.PLUTO_DB_NAME ?? "fairway-wallet",
-    storage: Storage,
+    storage: Storage as any,
     password: Buffer.from(config.PLUTO_PASSWD).toString("hex"),
     ignoreDuplicate: true,
   });
