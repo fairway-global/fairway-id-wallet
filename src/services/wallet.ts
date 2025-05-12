@@ -20,9 +20,10 @@ export class WalletService {
     encryptedPassword: string;
   } {
     const { mnemonics, seed } = this.generateSeedAndMnemonics();
-    const seedBuffer = seed.value;
+    const seedBytes = Buffer.from(seed.value);
+    const seedHex = seedBytes.toString("hex");
     const encryptedData = {
-      encryptedSeed: CryptoUtils.encrypt(seedBuffer.toString("hex")),
+      encryptedSeed: CryptoUtils.encrypt(seedHex),
       encryptedMnemonics: CryptoUtils.encrypt(mnemonics.join(" ")),
       encryptedPassword: CryptoUtils.encrypt(password),
     };

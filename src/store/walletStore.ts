@@ -199,6 +199,7 @@ import { WalletService } from "../services/wallet";
 import { apollo } from "../services/pluto";
 import SDK from "@hyperledger/identus-edge-agent-sdk";
 import { config } from "../config";
+import { CryptoUtils } from "../utils/crypto";
 
 interface WalletState {
   hasWallet: boolean;
@@ -217,6 +218,7 @@ interface WalletActions {
   clearSeedData: () => void;
   backupWallet: () => Promise<SDK.Domain.Backup.Schema>;
   restoreWallet: (backup: SDK.Domain.Backup.Schema) => Promise<void>;
+  getMnemonics: () => Promise<string>;
 }
 
 const walletService = new WalletService(apollo);
@@ -277,6 +279,25 @@ export const useWalletStore = create<WalletState & WalletActions>(
           return encryptedMnemonics;
         } catch (err) {
           logger.error("Wallet", "Failed to generate seed phrase", err);
+          throw err;
+        }
+      },
+
+      // write a funbction to get Mnemonics string from encryptedMnemonics
+      // and return it
+      async getMnemonics() {
+        logger.log("Wallet", "Getting mnemonics");
+        try {
+          const { encryptedMnemonics } = localStorage.getItem(
+            config.LOCAL_STORAGE_NAME
+          )
+            ? JSON.parse(localStorage.getItem(config.LOCAL_STORAGE_NAME)!)
+            : null;
+          if (!encryptedMnemonics) throw new Error("No mnemonics found");
+          const decryptedMnemonics = CryptoUtils.decrypt(encryptedMnemonics);
+          return decryptedMnemonics;
+        } catch (err) {
+          logger.error("Wallet", "Failed to get mnemonics", err);
           throw err;
         }
       },

@@ -8,6 +8,8 @@ import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ErrorIcon } from "@/components/ui/ErrorIcon";
+import { logger } from "@/utils/logger";
+import { useWalletStore } from "../../../store/walletStore";
 
 const Password = () => {
   const router = useRouter();
@@ -15,6 +17,7 @@ const Password = () => {
   const [passwordVal, setPasswordVal] = useState("");
   const [confirmPasswordVal, setConfirmPasswordVal] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { generateSeedPhrase, clearSeedData } = useWalletStore();
 
   const hasSpecialChar = useMemo(() => {
     const specialCharTest = (str: string) => /[!@#$%^&*(),.?":{}|<>]/.test(str);
@@ -31,12 +34,21 @@ const Password = () => {
     return isEnoughLength && passwordsMatch && hasSpecialChar;
   }, [isEnoughLength, passwordsMatch, hasSpecialChar]);
 
-  const onSavePassword = () => {
+  const handleGenerateSeed = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      toast("Wallet created successfully", { position: "top-center" });
-      router.push("/setup/final");
-    }, 3000);
+    logger.log("UI", "Generating seed phrase");
+    try {
+      clearSeedData(); // Clear any previous seed data
+      await generateSeedPhrase(passwordVal);
+      router.push("/setup");
+      logger.log("UI", "Seed phrase generation successful");
+      toast.success("Seed phrase generated successfully", {
+        position: "top-center",
+      });
+    } catch (err) {
+      logger.error("UI", "Failed to generate seed", err);
+      toast.error("Failed to generate seed phrase", { position: "top-center" });
+    }
   };
 
   return (
@@ -119,9 +131,8 @@ const Password = () => {
         className={
           "self-center mt-auto mb-0 flex justify-between w-full max-w-96"
         }
-        // FIXME: enable after demo
         isDisabled={!isPasswordValid}
-        onPress={onSavePassword}
+        onPress={handleGenerateSeed}
         isLoading={isLoading}
       >
         <span>Continue</span>

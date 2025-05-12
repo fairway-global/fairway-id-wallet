@@ -33,7 +33,7 @@ export default function Welcome() {
 
         <div className="mt-auto flex flex-col gap-y-4">
           <Button
-            onPress={() => router.push("/setup")}
+            onPress={() => router.push("/setup/password")}
             color="warning"
             className={"flex justify-between w-full max-w-96 mt-4"}
           >

@@ -3,21 +3,54 @@
 import FWLogoBox from "@/components/ui/FWLogoBox";
 import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
-import { phrases } from "../../utils/data";
 import { toast } from "sonner";
+import { useWalletStore } from "../../store/walletStore";
+import { useEffect, useState } from "react";
+import { logger } from "../../utils/logger";
+import { useAgentStore } from "../../store/agentStore";
 
 const Seed = () => {
   const router = useRouter();
+  const { getMnemonics } = useWalletStore();
+  const { startAgent } = useAgentStore();
+  const [mnemonics, setMnemonics] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchMnemonics = async () => {
+      try {
+        const mnemonics = await getMnemonics();
+        setMnemonics(mnemonics.split(" "));
+      } catch (error) {
+        console.error("Error fetching mnemonics:", error);
+        return [];
+      }
+    };
+    fetchMnemonics();
+  }, [getMnemonics]);
+
   const copySeedToClipboard = () => {
-    const stringToCopy = phrases.join(",");
     navigator.clipboard
-      .writeText(stringToCopy)
+      .writeText(mnemonics.join(","))
       .then(() => {
         toast("Copied to clipboard", { position: "top-center" });
       })
       .catch((err) => {
         console.error("Failed to copy to clipboard: ", err);
       });
+  };
+
+  const handleConfirmMnemonic = async () => {
+    logger.log("UI", "Confirming mnemonic and initializing wallet");
+    try {
+      await startAgent();
+      logger.log(
+        "UI",
+        "Wallet initialization successful, redirecting to dashboard"
+      );
+      router.push("/setup/final");
+    } catch (err) {
+      logger.error("UI", "Failed to initialize wallet", err);
+    }
   };
 
   return (
@@ -39,7 +72,7 @@ const Seed = () => {
             "relative w-full gap-x-2 p-4 text-lg font-semibold gap-y-1 bg-[#303841] text-white rounded-lg grid grid-cols-3 pb-12"
           }
         >
-          {phrases.map((word, i) => (
+          {mnemonics.map((word, i) => (
             <div key={i} className="flex">
               <b className="text-fwNewGreen pr-2">{i + 1}</b>
               {word}
@@ -68,7 +101,7 @@ const Seed = () => {
           "self-center mt-auto mb-0 flex justify-between w-full max-w-96"
         }
         isDisabled={false}
-        onPress={() => router.push("/setup/verify")}
+        onPress={handleConfirmMnemonic}
       >
         <span>Continue</span>
         <span>&#8594;</span>
