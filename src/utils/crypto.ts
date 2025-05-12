@@ -2,10 +2,9 @@ import sjcl from "sjcl";
 import { config } from "../config";
 
 export class CryptoUtils {
-  static encrypt(data: string): string {
+  static encrypt(data: string): any {
     try {
-      // FIXME: check if this works
-      return JSON.stringify(sjcl.encrypt(config.SECRET_KEY, data));
+      return sjcl.encrypt(config.SECRET_KEY, data);
     } catch (error) {
       throw new Error(`Encryption failed: ${error?.message}`);
     }
