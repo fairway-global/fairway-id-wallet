@@ -27,12 +27,14 @@ export default function VerifyId() {
     }
     setEditingMode(false);
     startLoading();
+    localStorage.setItem("fw_wallet_full_name", fullName);
+    localStorage.setItem("fw_wallet_birth_date", JSON.stringify(birthDate));
+    localStorage.setItem("fw_wallet_identity_verified", JSON.stringify(true));
+
     setTimeout(() => {
       stopLoading();
-      router.push(
-        `/dashboard/credentials/verifyId/otp?fullName=${fullName}&birthDate=${birthDate}&faydaNumber=${faydaNumber}`
-      );
-    }, 3000);
+      router.push(`/dashboard/credentials/`);
+    }, 1000);
   };
 
   const formatFaydaNumber = (value: string) => {
@@ -88,7 +90,7 @@ export default function VerifyId() {
               showMonthAndYearPickers={true}
               isRequired={true}
               name="birthDate"
-              className="w-full text-white"
+              className="w-full !text-white"
               label="Birth date"
               value={parseDate(dayjs(birthDate).format("YYYY-MM-DD"))} // Convert Dayjs to CalendarDate-compatible format
               onChange={(value: CalendarDate | null) => {

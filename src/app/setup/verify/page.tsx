@@ -25,7 +25,10 @@ const Seed = () => {
   };
 
   return (
-    <div className={"h-screen bg-black py-8 px-2 flex flex-col items-start"}>
+    <div
+      style={{ height: "calc(var(--vh, 1vh) * 100)" }}
+      className={"bg-black py-8 px-2 flex flex-col items-start"}
+    >
       <FWLogoBox />
       <div
         className={

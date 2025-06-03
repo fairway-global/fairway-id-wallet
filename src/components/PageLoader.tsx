@@ -9,7 +9,8 @@ interface IPageLoader {
 const PageLoader: React.FC<IPageLoader> = ({ loaderText = "" }) => {
   return (
     <div
-      className="flex flex-col items-center justify-center h-screen bg-gray-900"
+      className="flex flex-col items-center justify-center bg-gray-900"
+      style={{ height: "calc(var(--vh, 1vh) * 100)" }}
       aria-label="Loading"
     >
       <div className="animate-pulse mb-8">

@@ -2,7 +2,10 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 
 export default function DeviceError() {
   return (
-    <div className="flex items-center justify-center bg-[#1A2238] h-screen">
+    <div
+      className="flex items-center justify-center bg-[#1A2238]"
+      style={{ height: "calc(var(--vh, 1vh) * 100)" }}
+    >
       <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md mx-auto flex flex-col items-center">
         <ExclamationTriangleIcon
           height={80}

@@ -1,16 +1,19 @@
 "use client";
 
-import React, { Key } from "react";
+import React, { Key, useEffect, useLayoutEffect } from "react";
 import { Tabs, Tab } from "@heroui/react";
 import { usePathname, useRouter } from "next/navigation";
 import { CameraIcon, ChartPieIcon, CogIcon } from "@heroicons/react/24/outline";
 import Header from "@/components/ui/Header";
+import { useAgentStore } from "../../store/agentStore";
+import { toast } from "sonner";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { agent, agentLoading } = useAgentStore();
   const pathname = usePathname();
   const router = useRouter();
   const activeTab = pathname.split("/").pop() || "credentials";
@@ -19,8 +22,21 @@ export default function DashboardLayout({
     router.push(`/dashboard/${key === "credentials" ? "" : key}`);
   };
 
+  // check if there is an agent if there is an agent then send to home
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      if (!agent && agentLoading) {
+        router.push("/");
+        toast.warning("Wallet is not found, please create or recover it.");
+      }
+    }, 1500);
+  }, []);
+
   return (
-    <div className="bg-black h-screen grid grid-rows-[64px_1fr_56px]">
+    <div
+      className="bg-black grid grid-rows-[64px_1fr_56px]"
+      style={{ height: "calc(var(--vh, 1vh) * 100)" }}
+    >
       <Header />
 
       {/* Dynamic Content */}

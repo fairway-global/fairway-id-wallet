@@ -5,11 +5,16 @@ import { BellIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { Avatar } from "@heroui/react";
 import usePageTitles from "@/hooks/usePageTitles";
 import { Button } from "@heroui/button";
+import { useMemo } from "react";
 
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { title, showBackBtn } = usePageTitles(pathname);
+
+  const name = useMemo(() => {
+    return localStorage?.getItem("fw_wallet_full_name") ?? "";
+  }, [localStorage]);
 
   const handleBack = () => {
     router.back(); // Navigate back
@@ -24,7 +29,7 @@ export default function Header() {
             src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
           />
           <p className="text-sm text-gray-200 font-medium">
-            Hi, <b>Biniam</b>
+            Hi, <b>{name}</b>
           </p>
         </div>
         {showBackBtn && (

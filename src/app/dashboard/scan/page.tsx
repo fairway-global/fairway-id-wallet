@@ -116,7 +116,7 @@ export default function Scan() {
   }, [cameraStream]);
 
   return (
-    <div className="bg-black min-h-screen">
+    <div className="bg-black" style={{ height: "calc(var(--vh, 1vh) * 100)" }}>
       <h1 className="text-white text-xl p-4">Scan Page</h1>
       <video
         ref={videoRef}

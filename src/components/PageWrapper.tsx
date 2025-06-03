@@ -6,7 +6,10 @@ import { TabsProvider } from "../context/TabsContext"; // Adjust path as needed
 const PageWrapper: React.FC = () => {
   return (
     <TabsProvider>
-      <div className="bg-black min-h-screen grid grid-rows-[64px_1fr]">
+      <div
+        className="bg-black grid grid-rows-[64px_1fr]"
+        style={{ height: "calc(var(--vh, 1vh) * 100)" }}
+      >
         <Header />
         <AppTabs />
       </div>

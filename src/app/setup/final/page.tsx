@@ -8,7 +8,10 @@ import { TrophyIcon } from "@heroicons/react/24/outline";
 const FinalSetup = () => {
   const router = useRouter();
   return (
-    <div className={"h-screen bg-black py-8 px-2 flex flex-col items-start"}>
+    <div
+      className={"bg-black py-8 px-2 flex flex-col items-start"}
+      style={{ height: "calc(var(--vh, 1vh) * 100)" }}
+    >
       <FWLogoBox />
       <div
         className={
