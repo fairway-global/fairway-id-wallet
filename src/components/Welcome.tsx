@@ -19,7 +19,7 @@ export default function Welcome() {
           priority
         />
       </div>
-      <div className="p-8 flex flex-col gap-2 text-white">
+      <div className="p-8 flex flex-col gap-2 text-white mb-4">
         <div className="flex gap-2 justify-center mb-4">
           <Image
             src="/fairway-logo-only-white.png"
