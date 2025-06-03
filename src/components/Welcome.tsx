@@ -12,24 +12,27 @@ export default function Welcome() {
     >
       <div className="flex flex-col items-center justify-end gap-8 p-8">
         <Image
-          src="/fw-logo-white.png"
-          alt="Fairway logo"
-          width={200}
-          height={80}
-          priority
-        />
-        <Image
           src="/wallet-home-icon.png"
           alt="Visualization"
-          width={350}
-          height={300}
+          width={300}
+          height={200}
           priority
         />
       </div>
       <div className="p-8 flex flex-col gap-2 text-white">
-        <p className={"text-3xl font-bold text-left"}>
-          Welcome to Your Professional ID Wallet
-        </p>
+        <div className="flex gap-2 justify-center mb-4">
+          <Image
+            src="/fairway-logo-only-white.png"
+            alt="Fairway logo"
+            width={100}
+            height={100}
+            priority
+          />
+          <p className={"text-3xl font-bold text-left"}>
+            Welcome to Your Professional ID Wallet
+          </p>
+        </div>
+
         <p className={"font-thin italic text-left"}>
           Hold shared your ID and Degrees securely, Get Hired 10x faster
         </p>

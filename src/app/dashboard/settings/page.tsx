@@ -52,10 +52,7 @@ export default function Settings() {
   };
 
   return (
-    <div
-      className="bg-black flex flex-col gap-4"
-      style={{ height: "calc(var(--vh, 1vh) * 100)" }}
-    >
+    <div className="bg-black flex flex-col gap-4">
       <ExpandableBox title="Change Password">
         <div className="flex flex-col">
           <div

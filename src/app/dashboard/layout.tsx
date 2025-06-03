@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Key, useEffect, useLayoutEffect } from "react";
+import React, { Key, useLayoutEffect } from "react";
 import { Tabs, Tab } from "@heroui/react";
 import { usePathname, useRouter } from "next/navigation";
 import { CameraIcon, ChartPieIcon, CogIcon } from "@heroicons/react/24/outline";
