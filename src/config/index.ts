@@ -1,6 +1,6 @@
 // Server URLs
 export const MEDIATOR_URL = "http://localhost:8080";
-export const CLOUD_AGENT_URL = "http://localhost:3000/cloud-agent";
+export const CLOUD_AGENT_URL = "http://localhost:8085";
 export const ISSUER_DID =
   "did:prism:48c252d32b349f70794f518d6aa412525018b3ac3f2a78bbc5107a49abf183bc";
 export const IDENTITY_SCHEMA_ID = "a163967-1836-4e29-8aa6-97518abaa597";
