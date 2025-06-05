@@ -70,9 +70,10 @@ export default function Credentials() {
   };
 
   const isIdentityVerified = useMemo(() => {
-    return localStorage
-      ? JSON.parse(localStorage.getItem("fw_wallet_identity_verified") ?? "")
-      : "";
+    const locallyVerified = localStorage?.getItem(
+      "fw_wallet_identity_verified"
+    );
+    return locallyVerified ? true : false;
   }, [localStorage]);
 
   const demoInvitationUrl = useMemo(() => {}, []);
