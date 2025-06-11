@@ -24,8 +24,8 @@ export default function Welcome() {
           <Image
             src="/fairway-logo-only-white.png"
             alt="Fairway logo"
-            width={100}
-            height={100}
+            width={120}
+            height={120}
             priority
           />
           <p className={"text-3xl font-bold text-left"}>
