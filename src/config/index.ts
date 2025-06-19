@@ -1,6 +1,4 @@
 // Server URLs
-// export const MEDIATOR_URL = "http://localhost:8080";
-// export const CLOUD_AGENT_URL = "http://localhost:8085";
 
 // export const CLOUD_PROXY_URL = "https://vm.fairway.global/node";
 export const MEDIATOR_URL = "https://vm.fairway.global/mediator";
