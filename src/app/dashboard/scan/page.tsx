@@ -11,30 +11,42 @@ export default function Scan() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const cameraScannerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [cameraPermission, setCameraPermission] = useState<string | null>(null); // Added for permission tracking
   const router = useRouter();
   const { acceptInvitationUrl } = useAgentStore();
 
   useEffect(() => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices
-        .getUserMedia({
-          video: {
-            facingMode: "environment",
-          },
-        })
-        .then((stream: MediaStream) => {
-          setCameraStream(stream);
-          const cameraElement = videoRef.current;
-          if (cameraElement) {
-            cameraElement.srcObject = stream;
-            cameraElement.onloadedmetadata = () => {
-              cameraElement.play();
-            };
-          }
-        })
-        .catch((error: DOMException) =>
-          console.error("Error accessing the camera:", error)
-        );
+      // Check permission status before requesting camera access
+      navigator.permissions.query({ name: "camera" }).then((permissionStatus) => {
+        setCameraPermission(permissionStatus.state);
+        if (permissionStatus.state !== "denied") {
+          navigator.mediaDevices
+            .getUserMedia({
+              video: {
+                facingMode: "environment",
+              },
+            })
+            .then((stream: MediaStream) => {
+              setCameraStream(stream);
+              setCameraPermission("granted"); // Update permission state on success
+              const cameraElement = videoRef.current;
+              if (cameraElement) {
+                cameraElement.srcObject = stream;
+                cameraElement.onloadedmetadata = () => {
+                  cameraElement.play();
+                };
+              }
+            })
+            .catch((error: DOMException) => {
+              console.error("Error accessing the camera:", error);
+              setCameraPermission("denied"); // Update permission state on failure
+            });
+        }
+      }).catch((error) => {
+        console.error("Permission check failed:", error);
+        setCameraPermission("denied");
+      });
     } else {
       alert("getUserMedia() is not supported by your browser.");
     }
@@ -113,7 +125,21 @@ export default function Scan() {
       }
       stopCamera(cameraStream);
     };
-  }, [cameraStream]);
+  }, [cameraStream, router, acceptInvitationUrl]);
+
+  // Render permission denied message if access is blocked
+  if (cameraPermission === "denied") {
+    return (
+      <div className="text-white p-4">
+        <p>Camera access is denied. Please enable it in your iOS settings:</p>
+        <ol className="list-decimal ml-4">
+          <li>Go to Settings > Safari > Camera</li>
+          <li>Set to "Ask" or "Allow"</li>
+          <li>Reload the app</li>
+        </ol>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-black" style={{ height: "calc(var(--vh, 1vh) * 100)" }}>
