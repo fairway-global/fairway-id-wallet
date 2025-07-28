@@ -1,83 +1,113 @@
-🪪 Fairway ID Wallet
-Welcome to the Fairway ID Wallet, a secure and user-friendly digital wallet designed to manage your identity and credentials with ease. Built on top of Hyperledger Identus, this wallet embraces Self-Sovereign Identity (SSI) principles, empowering you with full control over your personal data. Whether you're a developer exploring the tech or an engineer eager to contribute, this README will walk you through the project’s purpose, tech stack, architecture, and setup process. 🚀
+# 💼 Fairway ID Wallet
 
-🌟 What is Fairway ID Wallet?
-The Fairway ID Wallet is an open-source application that enables users to securely store, manage, and share identity credentials. It integrates with decentralized identity systems, leveraging Hyperledger Identus to ensure privacy and security. Here are some standout features:
+![Fairway ID Wallet Mockup](https://i.ibb.co/pj6HwCkT/walletiphone-1.png) <!-- Replace `mockup.png` with your actual image file or hosted URL -->
 
-🔐 Secure Credential Storage: Encrypts and stores your credentials locally on your device.
-📱 Mobile-Optimized: Designed with a mobile-first approach for a seamless experience.
-🛡️ Identity Verification: Supports verification with systems like Fayda (Ethiopian National ID).
-📨 Credential Sharing: Share credentials securely using DIDComm V2 protocols.
-🔄 Extensible Integrations: Connects with external services for broader functionality.
+Welcome to the **Fairway ID Wallet** — a secure, mobile-first, and user-friendly digital wallet designed to help you manage your identity and credentials with full control. Built on **Hyperledger Identus** and grounded in **Self-Sovereign Identity (SSI)** principles, this wallet empowers users to own and control their personal data without relying on centralized authorities.
 
-This wallet is perfect for managing professional identities, educational credentials, and more—all in a decentralized, user-controlled environment.
+> ⚡ *Get hired 10x faster by securely holding and sharing your credentials.*
 
-🛠️ Tech Stack & Architecture
-The Fairway ID Wallet is powered by a modern, robust tech stack tailored for security and scalability. Here’s what drives it:
+---
 
-Frontend: ⚛️ React with Next.jsDelivers a fast, server-rendered UI with an excellent developer experience.
-State Management: 🧩 ZustandLightweight and efficient, managing agent, credential, and message states.
-UI Components: 🎨 HeroUIProvides a consistent, accessible design system for the interface.
-Decentralized Identity: 🔗 Hyperledger Identus Edge Agent SDKHandles DID (Decentralized Identifier) creation, credential management, and secure communication.
-Cryptography: 🔑 SJCL (Stanford JavaScript Crypto Library) & bip39Ensures secure encryption and mnemonic seed generation for key management.
-Local Storage: 🗄️ IndexedDB (via idb-keyval)Persists wallet data securely on the device.
-Containerization: 🐳 DockerSimplifies deployment with a containerized setup.
+## 🌟 What is Fairway ID Wallet?
 
-Architecture Overview
-The wallet’s architecture is modular and follows a clean separation of concerns:
+The **Fairway ID Wallet** is an open-source application that allows users to store, manage, and share verifiable credentials. It is built for individuals, developers, and institutions who value privacy, security, and interoperability in identity management.
 
-UI Layer: Built with React and Next.js, offering a responsive, intuitive interface.
-State Management: Zustand stores manage application state (e.g., agent, credentials, messages).
-Services: Handle core logic, including DID operations, agent initialization, and Pluto (database) interactions.
-Utilities: Provide reusable functions for cryptography, logging, and wallet operations.
+### 🔥 Key Features
 
-Here’s a simplified flow:
-[UI] <-> [Zustand Stores] <-> [Services] <-> [Hyperledger Identus SDK]
+- 🔐 **Secure Credential Storage** – Locally encrypted and user-owned.
+- 📱 **Mobile-Optimized Interface** – Designed with a mobile-first philosophy.
+- 🛡️ **Identity Verification** – Integration-ready with systems like **Fayda** (Ethiopian National ID).
+- 📨 **DIDComm V2 Support** – Enables encrypted, peer-to-peer credential exchange.
+- 🔄 **Extensible Integrations** – Connect with verifiers, issuers, and mediators.
+- 🌐 **Decentralized** – No central server or data silo.
 
+> This wallet is perfect for managing **professional identities**, **educational credentials**, and more—all in a **user-controlled** environment.
 
-How it Works: User interactions (e.g., verifying an identity) update the state via Zustand. The services layer then uses the Hyperledger Identus SDK to perform operations like creating DIDs or processing credential offers, all while keeping data secure and local.
+---
 
+## 🛠️ Tech Stack & Architecture
 
-🔒 Security: Your Data, Your Control
-Security is paramount in the Fairway ID Wallet. Here’s how we protect your data:
+The Fairway ID Wallet is powered by a modern and scalable stack:
 
-🔐 End-to-End Encryption: Sensitive data (e.g., seeds, mnemonics) is encrypted using SJCL.
-🛡️ Local Storage: All data stays on your device—no central servers involved.
-🔑 Secure Key Management: Generates and recovers seeds via mnemonic phrases with bip39.
-📡 DIDComm V2: Ensures encrypted, authenticated communication between parties.
+| Layer         | Tech Stack                            |
+|---------------|----------------------------------------|
+| **Frontend**  | ⚛️ React + Next.js                     |
+| **State**     | 🧠 Zustand (Global app state)           |
+| **UI Kit**    | 🎨 HeroUI                              |
+| **SSI Agent** | 🔗 Hyperledger Identus Edge Agent SDK  |
+| **Crypto**    | 🔐 SJCL + bip39                        |
+| **Storage**   | 🗄️ IndexedDB via `idb-keyval`          |
+| **Deploy**    | 🐳 Docker                              |
 
+### ⚙️ Architecture Overview
 
-🚀 Getting Started
-Ready to explore the Fairway ID Wallet? Follow these steps to set it up locally:
+🖥️ User Interface (Next.js)<br>
+⬇️<br>
+🧠 Zustand State Stores<br>
+⬇️<br>
+⚙️ Service Layer (Agent, Wallet, DID Logic)<br>
+⬇️<br>
+🔗 Hyperledger Identus SDK
 
-Clone the Repository  
+---
+
+## 🔐 Security: Your Data, Your Control
+
+Security is at the heart of Fairway ID Wallet:
+
+- 🔑 **Mnemonic Key Management** – Bip39 for key recovery and seed generation.
+- 🛡️ **End-to-End Encryption** – Powered by SJCL for all sensitive operations.
+- 📡 **Encrypted Communication** – Via DIDComm V2 messaging protocol.
+- 🗃️ **Local-Only Storage** – No cloud or central server dependency.
+
+---
+
+## 🚀 Getting Started
+
+Follow these simple steps to run the wallet locally:
+
+### 1. Clone the repository
+```bash
 git clone https://github.com/yourusername/fairway-id-wallet.git
 cd fairway-id-wallet
+```
+### 2. Install dependencies
 
-
-Install Dependencies  
+```bash
 npm install
+```
+### 3. Configure the environment
 
-
-Configure EnvironmentEdit src/config/index.ts to include your settings, such as the mediator URL for Hyperledger Identus. Example:
+Edit src/config/index.ts:
+``` ts
 export const config = {
   MEDIATOR_URL: "https://your-mediator-endpoint.com",
   SECRET_KEY: "your-secret-key",
 };
+```
+### 4. Run the development server
 
-Run the Development Server  
+```bash
+Copy
 npm run dev
+```
+### 5. Open the app
 
+Visit http://localhost:3000 in your browser.
 
-Open the AppVisit http://localhost:3000 in your browser to start using the wallet
+## 🧠 Why Use Fairway ID Wallet?
 
-Why Use Fairway ID Wallet?
+🔑 Self-Sovereign – You own your keys and credentials.<br>
+📱 Built for Mobile – Fast, sleek, and intuitive UI.<br>
+🌍 Open Standards – Based on DIDComm V2 + Hyperledger Identus.<br>
+🚀 Capacitor-Ready – Extend to native mobile apps easily.<br>
+🔄 Interoperable – Built to connect with the growing identity ecosystem.<br>
 
-🔑 User Empowerment: You control your data and cryptographic keys.
-⚡ Responsive Design: Optimized for mobile with a smooth, fast UI.
-📱 Cross-Platform Potential: Web-based now, extendable to mobile apps via tools like Capacitor.
-🌍 Standards-Based: Built on DIDComm V2 and Hyperledger Identus for interoperability.
+## 📖 Learn More
 
-let’s shape the future of decentralized identity! 🌟
+📘 Full Documentation: https://fairway.gitbook.io/docs<br>
+🌐 Fairway Official Site: https://fairway.global<br>
+💡 Let’s Shape the Future of Decentralized Identity!<br>
 
-Built with ❤️ by the Fairway ID Wallet Team
+Fairway ID Wallet is proudly open source and built with ❤️ by the Fairway team. Whether you're contributing code, reporting issues, or sharing ideas, you're welcome to join the mission.
+
