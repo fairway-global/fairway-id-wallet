@@ -1,4 +1,5 @@
 import SDK from "@hyperledger/identus-edge-agent-sdk";
+import { CLOUD_AGENT_URL } from "../config";
 export function decodeJwtPayload(jwt: string): any {
   const token = atob(jwt);
   return JSON.parse(atob(token.split(".")[1]));
@@ -7,7 +8,7 @@ export class ShortFormDIDResolverSample implements SDK.Domain.DIDResolver {
   method: string = "prism";
 
   async resolve(didString: string): Promise<SDK.Domain.DIDDocument> {
-    const url = "http://localhost:3000/cloud-agent/dids/" + didString;
+    const url = `${CLOUD_AGENT_URL}/dids/` + didString;
     const response = await fetch(url, {
       headers: {
         accept: "*/*",

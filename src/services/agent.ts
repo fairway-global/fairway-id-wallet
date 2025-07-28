@@ -1,8 +1,23 @@
 import SDK from "@hyperledger/identus-edge-agent-sdk";
 import { ShortFormDIDResolverSample } from "@/utils/index";
-import { config, MEDIATOR_URL } from "@/config";
+import { CLOUD_AGENT_URL, config, MEDIATOR_URL } from "@/config";
 import { connectPluto } from "./pluto";
+import { HttpMethod } from "@hyperledger/identus-edge-agent-sdk/build/domain";
 
+class CustomApi extends SDK.ApiImpl {
+  async request(
+    method: HttpMethod,
+    path: string,
+    params?: any,
+    body?: any,
+    headers?: any
+  ): Promise<any> {
+    const url = `${CLOUD_AGENT_URL}${path}`; // Prepend cloud base URL to all paths
+    // Call the parent request method with the full URL
+    console.log("Sending to:", url);
+    return super.request(method, url, params, body, headers);
+  }
+}
 export class AgentService {
   private apollo: SDK.Apollo;
   // FIXME: the type of logger shhould be fixed
@@ -39,10 +54,12 @@ export class AgentService {
       if (!mediator) {
         throw new Error("Mediator not available");
       }
+
+      const customApi = new CustomApi();
       const agent = SDK.Agent.initialize({
         mediatorDID: mediator,
         pluto: this.pluto!,
-        api: agentDependencies.api,
+        api: customApi,
         apollo: agentDependencies.apollo,
         castor: agentDependencies.castor,
         mercury: agentDependencies.mercury,

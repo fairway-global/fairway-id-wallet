@@ -4,6 +4,8 @@ import { Toaster } from "sonner";
 import { MobileProvider } from "../context/MobileContext";
 import { Provider } from "./provider";
 import { useEffect } from "react";
+import AgentInitializer from "../components/AgentIntializer";
+// NEW: Import new component
 
 export default function RootLayout({
   children,
@@ -26,7 +28,10 @@ export default function RootLayout({
       <body>
         <Toaster />
         <MobileProvider>
-          <Provider>{children}</Provider>
+          <Provider>
+            <AgentInitializer /> {/* MODIFIED: Added for global agent init */}
+            {children}
+          </Provider>
         </MobileProvider>
       </body>
     </html>

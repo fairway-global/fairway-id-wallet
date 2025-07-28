@@ -3,18 +3,19 @@ import { useParams, useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { Button } from "@heroui/react";
 import { toast } from "sonner";
-import { useAgentStore } from "../../../../../store/agentStore";
-import { useMessageStore } from "../../../../../store/messageStore";
+import Image from "next/image";
 import SDK from "@hyperledger/identus-edge-agent-sdk";
+import { useMessageStore } from "../../../../../store/messageStore";
+import { useAgentStore } from "../../../../../store/agentStore";
+import { formatDate } from "../../../../../utils";
 
 export default function CredentialOfferDetail() {
   const { id } = useParams();
   const router = useRouter();
-  const { messages } = useMessageStore();
+  const { messages, rawMessages } = useMessageStore();
   const { acceptCredentialOffer } = useAgentStore(); // Assuming this is available in agentStore
 
   const offer = useMemo(() => {
-    console.log("Messages:", messages);
     return messages.find((msg) => msg.id === id);
   }, [id, messages]);
 
@@ -24,7 +25,12 @@ export default function CredentialOfferDetail() {
 
   const handleAccept = async () => {
     try {
-      await acceptCredentialOffer(offer as SDK.Domain.Message); // Call to accept the offer
+      const rawMessage = rawMessages.find((msg) => msg.id === id);
+      if (!rawMessage) {
+        toast.error("Raw message not found for this offer.");
+        return;
+      }
+      await acceptCredentialOffer(rawMessage); // Call to accept the offer
       toast.success("Credential offer accepted.");
       router.push("/dashboard/credentials"); // Redirect back
     } catch (error) {
@@ -39,42 +45,79 @@ export default function CredentialOfferDetail() {
     router.push("/dashboard/credentials");
   };
 
-  // Extract claims from the offer (assuming from body or attachments)
-  const claims = offer.content?.credential_preview?.attributes || {}; // Adjust based on actual structure
+  // Extract attributes from the offer's credential_preview (array of { name, value })
+  const attributes = offer.content?.credential_preview?.body?.attributes || [];
+
+  // Extract issuance date or use timestamp as fallback
+  const issuanceDate = offer.timestamp;
+
+  const HR = () => (
+    <hr className="h-px my-4 bg-gray-400 border-0 dark:bg-gray-400 w-full" />
+  );
 
   return (
-    <div className="text-white p-4 flex flex-col gap-4">
-      <h1 className="text-xl font-bold">Credential Offer Details</h1>
-      <p>
-        <strong>From:</strong> {offer.from || "Unknown"}
-      </p>
-      <p>
-        <strong>Timestamp:</strong> {offer.timestamp}
-      </p>
-      <p>
-        <strong>Goal:</strong> {offer.content?.goalCode || "N/A"}
-      </p>
-
-      <h2 className="text-lg font-semibold">Claims Preview:</h2>
-      {Object.entries(claims).length === 0 ? (
-        <p>No claims available.</p>
-      ) : (
-        <ul className="list-disc pl-4">
-          {Object.entries(claims).map(([key, value]) => (
-            <li key={key}>
-              <strong>{key}:</strong> {String(value)}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div className="flex gap-4 mt-4">
-        <Button color="success" onPress={handleAccept}>
-          Accept
-        </Button>
-        <Button color="danger" onPress={handleReject}>
-          Reject
-        </Button>
+    <div className="flex flex-col items-center text-white">
+      <div
+        className={`rounded-2xl p-4 flex flex-col items-center h-auto bg-[rgba(255,255,255,0.15)] backdrop-blur-xl border border-[rgba(255,255,255,0.2)] shadow-lg w-[80%]`}
+      >
+        <Image
+          alt="Verified Icon"
+          src={"/verified-purple.svg"}
+          height={72}
+          width={72}
+          className={"mt-2"}
+        />
+        <HR />
+        <div className="grid grid-cols-2 w-full">
+          <div className="flex flex-col items-start gap-2 w-full">
+            <p className="text-xs">OFFERED DATE</p>
+            <p className="text-[20px] font-bold">{formatDate(issuanceDate)}</p>
+          </div>
+          <div className="flex flex-col items-end gap-2 w-full">
+            <p className="text-xs">VALID UNTIL</p>
+            <p className="text-[20px] font-bold">N/A</p>{" "}
+            {/* No expiry in offer; use N/A */}
+          </div>
+        </div>
+        <div className="grid grid-cols-1 w-full">
+          {attributes.length === 0 ? (
+            <p className="text-sm text-gray-500">No attributes available</p>
+          ) : (
+            attributes.map(
+              (attr: { name: string; value: string }, index: number) => (
+                <div key={index} className="flex flex-col items-start w-full">
+                  <p className="text-xs">
+                    {attr.name
+                      .replace(/([A-Z])/g, " $1")
+                      .trim()
+                      .toUpperCase()}
+                  </p>
+                  <p className="text-[20px] font-bold">{attr.value}</p>
+                  <HR />
+                </div>
+              )
+            )
+          )}
+        </div>
+        <HR />
+        <div className="flex justify-between w-full gap-2">
+          <Button
+            size="sm"
+            className={"flex justify-center text-white bg-fwNewGreen w-full"}
+            onPress={handleAccept}
+          >
+            Accept
+          </Button>
+          <Button
+            size="sm"
+            className={
+              "flex justify-center text-fwNewRed border border-fwNewRed bg-transparent w-full"
+            }
+            onPress={handleReject}
+          >
+            Reject
+          </Button>
+        </div>
       </div>
     </div>
   );

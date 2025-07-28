@@ -1,15 +1,14 @@
 "use client";
 import Welcome from "@/components/Welcome";
 import PageLoader from "../components/PageLoader";
-import { useInitialization } from "../hooks/useIntialisation";
+import { useAgentStore } from "../store/agentStore"; // MODIFIED: Use store for loading
 
 export default function Root() {
-  const { isInitializing } = useInitialization();
+  const { agentLoading } = useAgentStore(); // MODIFIED: Use agent loading state
 
-  // Show loader during initialization, then render Welcome or handle errors
-  return isInitializing ? (
-    <PageLoader loaderText="wallet booting up..." />
-  ) : (
-    <Welcome />
-  );
+  if (agentLoading) {
+    return <PageLoader loaderText="wallet booting up..." />;
+  }
+
+  return <Welcome />;
 }

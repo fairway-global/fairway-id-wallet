@@ -113,6 +113,7 @@ export default function Credentials() {
         }
         aria-label="Credential Tabs"
         className="w-full"
+        color={"primary"}
       >
         <Tab key="credentials" title="Credentials">
           {!isIdentityVerified ? (
@@ -126,7 +127,7 @@ export default function Credentials() {
               <Button
                 size="sm"
                 className={
-                  "flex justify-center text-fwNewGreen border border-fwNewGreen bg-transparent w-full"
+                  "flex justify-center text-fwNewGreen border border-fwNewGreen bg-transparent w-full mt-2"
                 }
                 onPress={onAddCredential}
               >
@@ -145,11 +146,11 @@ export default function Credentials() {
               <BlurredCard
                 key={offer.id}
                 bgColor="#FDB82C" // Example color for offers
-                className="p-4 cursor-pointer"
+                className="p-4 cursor-pointer mb-2"
                 onClick={() => handleOfferClick(offer.id)}
               >
                 <div className="flex justify-between items-center">
-                  <p className="font-semibold">
+                  <p className="font-semibold truncate">
                     Credential Offer from {offer.from || "Unknown"}
                   </p>
                   <p className="text-sm text-gray-500">
@@ -172,7 +173,7 @@ export default function Credentials() {
       >
         <p className="text-center text-yellow-500 mb-4 text-sm italic">
           For Demo purposes only: Please follow the link to get your own
-          credential invitation  
+          credential invitation
           <Link
             className="underline"
             target="_blank"
