@@ -29,6 +29,31 @@ export default function Credentials() {
     "credentials"
   ); // Added state for sub-tabs
 
+  // Create a mock data for demonstration purposes of credentials
+  const mockCredentials = useMemo(() => {
+    return [
+      {
+        id: "1",
+        type: "National ID",
+        issuer: "Government of Fairway",
+        issuanceDate: new Date().toISOString(),
+        expirationDate: new Date(
+          Date.now() + 365 * 24 * 60 * 60 * 1000
+        ).toISOString(),
+        claims: {
+          uniqueIdentifier: "ID-1234567",
+          phoneNumber: "+1-555-1234",
+          idProvider: "Ethiopian NationalID Fayda",
+          fullName: "Abebe Kebede",
+          expiryDate: "2030-01-01T00:00:00Z",
+          birthDate: "1990-01-01T00:00:00Z",
+          nationality: "ETHIOPIA",
+          gender: "Male",
+        },
+      },
+    ];
+  }, []);
+
   useEffect(() => {
     const loadData = async () => {
       try {
