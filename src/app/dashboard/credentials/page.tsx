@@ -51,6 +51,24 @@ export default function Credentials() {
           gender: "Male",
         },
       },
+      // Add more mock credentials as needed
+      {
+        id: "2",
+        type: "Driving License",
+        issuer: "Fairway Transport Authority",
+        issuanceDate: new Date().toISOString(),
+        expirationDate: new Date(
+          Date.now() + 365 * 24 * 60 * 60 * 1000 // 1 year validity
+        ).toISOString(),
+        claims: {
+          uniqueIdentifier: "DL-9876543",
+          fullName: "Abebe Kebede",
+          licenseNumber: "DL-123456789",
+          vehicleClass: "C",
+          issueDate: "2023-01-01T00:00:00Z",
+          expiryDate: "2030-01-01T00:00:00Z",
+        },
+      },
     ];
   }, []);
 
