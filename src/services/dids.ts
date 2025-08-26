@@ -14,8 +14,9 @@ export async function createDID(services: SDK.Domain.Service[]) {
   });
 
   const did = await castor.createPrismDID(privateKey.publicKey(), services);
+  const publicKey = privateKey.publicKey();
 
-  return { did, mnemonics, privateKey };
+  return { did, mnemonics, privateKey, publicKey };
 }
 
 export async function recoverDID(
