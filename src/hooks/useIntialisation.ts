@@ -40,7 +40,7 @@ export function useInitialization() {
     if (!agent) {
       initialize();
     }
-  }, []);
+  }, [agent, checkWallet, router, startAgent]);
 
   return { isInitializing, error };
 }

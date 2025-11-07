@@ -7,7 +7,8 @@ const nextConfig = {
         crypto: false,
         stream: false,
         path: false,
-      };
+        'rdf-canonize-native': false,
+      }; 
     }
     return config;
   },

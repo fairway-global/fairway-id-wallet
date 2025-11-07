@@ -14,7 +14,7 @@ export default function Header() {
 
   const name = useMemo(() => {
     return localStorage?.getItem("fw_wallet_full_name") ?? "";
-  }, [localStorage]);
+  }, []);
 
   const handleBack = () => {
     router.back(); // Navigate back

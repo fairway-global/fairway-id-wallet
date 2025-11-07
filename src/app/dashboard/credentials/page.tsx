@@ -96,7 +96,7 @@ export default function Credentials() {
   const credentialOffers = useMemo(() => {
     console.log("Messages:", messages);
     return messages.filter(
-      (msg) => msg.type === SDK.ProtocolType.DidcommOfferCredential
+      (msg: any) => msg.type === SDK.ProtocolType.DidcommOfferCredential
     );
   }, [messages]);
 
@@ -137,7 +137,7 @@ export default function Credentials() {
       "fw_wallet_identity_verified"
     );
     return locallyVerified ? true : false;
-  }, [localStorage]);
+  }, []);
 
   const onVerify = () => {
     router.push("/dashboard/credentials/verifyId");
@@ -184,7 +184,7 @@ export default function Credentials() {
               No credential offers available.
             </p>
           ) : (
-            credentialOffers.map((offer) => (
+            credentialOffers.map((offer: any) => (
               <BlurredCard
                 key={offer.id}
                 bgColor="#FDB82C" // Example color for offers

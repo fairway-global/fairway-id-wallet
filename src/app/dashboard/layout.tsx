@@ -30,7 +30,7 @@ export default function DashboardLayout({
         toast.warning("Wallet is not found, please create or recover it.");
       }
     }, 1500);
-  }, []);
+  }, [agent, agentLoading, router]);
 
   return (
     <div

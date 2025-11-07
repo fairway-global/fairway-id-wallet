@@ -9,7 +9,9 @@ import { useRouter } from "next/navigation";
 const Seed = () => {
   const router = useRouter();
   // FIXME: Remove after demo
-  const phrases = ["word1", "word2", "word3", "word4"];
+  const phrases: any = useMemo(() => {
+    ["word1", "word2", "word3", "word4"];
+  }, []);
   const [inputSeed, setInputSeed] = useState<Record<number, string>>({});
   const seedMatches: boolean = useMemo(() => {
     return phrases.every((phrase, index) => inputSeed[index] === phrase);

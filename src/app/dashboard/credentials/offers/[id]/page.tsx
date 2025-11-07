@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { Button } from "@heroui/react";
 import { toast } from "sonner";
 import { useAgentStore } from "../../../../../store/agentStore";
-import { useMessageStore } from "../../../../../store/messageStore";
+import { Message, useMessageStore } from "../../../../../store/messageStore";
 import SDK from "@hyperledger/identus-edge-agent-sdk";
 
 export default function CredentialOfferDetail() {
@@ -13,7 +13,7 @@ export default function CredentialOfferDetail() {
   const { messages } = useMessageStore();
   const { acceptCredentialOffer } = useAgentStore(); // Assuming this is available in agentStore
 
-  const offer = useMemo(() => {
+  const offer: Message = useMemo(() => {
     console.log("Messages:", messages);
     return messages.find((msg) => msg.id === id);
   }, [id, messages]);
