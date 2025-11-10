@@ -7,6 +7,13 @@ import { useAgentStore } from "../../../../../store/agentStore";
 import { useMessageStore } from "../../../../../store/messageStore";
 import SDK from "@hyperledger/identus-edge-agent-sdk";
 
+type CredentialPreviewContent = {
+  credential_preview?: {
+    attributes?: Record<string, unknown>;
+  };
+  goalCode?: string;
+};
+
 export default function CredentialOfferDetail() {
   const { id } = useParams();
   const router = useRouter();
@@ -40,7 +47,12 @@ export default function CredentialOfferDetail() {
   };
 
   // Extract claims from the offer (assuming from body or attachments)
-  const claims = offer.content?.credential_preview?.attributes || {}; // Adjust based on actual structure
+  const previewContent = offer.content as CredentialPreviewContent | undefined;
+  const claims =
+    (previewContent?.credential_preview?.attributes as
+      | Record<string, unknown>
+      | undefined) || {};
+  const goalCode = (previewContent?.goalCode as string | undefined) ?? "N/A";
 
   return (
     <div className="text-white p-4 flex flex-col gap-4">
@@ -52,7 +64,7 @@ export default function CredentialOfferDetail() {
         <strong>Timestamp:</strong> {offer.timestamp}
       </p>
       <p>
-        <strong>Goal:</strong> {offer.content?.goalCode || "N/A"}
+        <strong>Goal:</strong> {goalCode}
       </p>
 
       <h2 className="text-lg font-semibold">Claims Preview:</h2>

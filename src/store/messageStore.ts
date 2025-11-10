@@ -3,18 +3,18 @@ import SDK from "@hyperledger/identus-edge-agent-sdk";
 import { useAgentStore } from "./agentStore";
 import { logger } from "@/utils/logger";
 
-export interface Message {
+export type FormattedMessage = Partial<SDK.Domain.Message> & {
   id: string;
   type: string;
-  content: any;
+  content?: Record<string, unknown>;
   timestamp: string;
   from?: string;
   to?: string;
   status: "pending" | "processed" | "error";
-}
+};
 
 interface MessageState {
-  messages: Partial<SDK.Domain.Message>[];
+  messages: FormattedMessage[];
   rawMessages: SDK.Domain.Message[];
   fetchMessages: () => Promise<void>;
 }
@@ -29,7 +29,7 @@ export const useMessageStore = create<MessageState>((set) => ({
       const agent = useAgentStore.getState().agent;
       if (!agent) throw new Error("Agent not initialized");
       const storedMessages = await agent.pluto.getAllMessages();
-      const messagesFormated: Partial<SDK.Domain.Message>[] = storedMessages
+      const messagesFormated: FormattedMessage[] = storedMessages
         .map((msg: any) => ({
           id: msg.id || crypto.randomUUID(),
           type: msg.piuri || "unknown",

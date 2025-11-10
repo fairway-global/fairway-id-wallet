@@ -14,11 +14,11 @@ export function useInitialization() {
   useEffect(() => {
     const initialize = async () => {
       try {
-        const { success, error } = await checkWallet();
+        const { success } = await checkWallet();
         if (success) {
           console.log("Wallet found, starting agent...");
-          const agent = await startAgent();
-          if (agent?.state === "running") {
+          const startedAgent = await startAgent();
+          if (startedAgent?.state === "running") {
             router.push("/dashboard"); // Navigate to dashboard on success
           }
         } else {
@@ -28,7 +28,11 @@ export function useInitialization() {
         }
       } catch (err) {
         console.error("Initialization error:", err);
-        setError(err.message || "An error occurred during initialization");
+        const message =
+          err instanceof Error
+            ? err.message
+            : "An error occurred during initialization";
+        setError(message);
         toast.error("Initialization failed. Please try again.");
         router.push("/"); // Navigate to home on error
       } finally {
@@ -40,7 +44,7 @@ export function useInitialization() {
     if (!agent) {
       initialize();
     }
-  }, []);
+  }, [agent, checkWallet, router, startAgent]);
 
   return { isInitializing, error };
 }

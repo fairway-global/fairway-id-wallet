@@ -1,14 +1,27 @@
+const path = require("path");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: (config, { isServer }) => {
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      "rdf-canonize-native": path.resolve(
+        __dirname,
+        "src/shims/rdf-canonize-native.js"
+      ),
+    };
+
     if (!isServer) {
       config.resolve.fallback = {
+        ...(config.resolve.fallback || {}),
         fs: false,
         crypto: false,
         stream: false,
         path: false,
       };
     }
+
     return config;
   },
   // async rewrites() {

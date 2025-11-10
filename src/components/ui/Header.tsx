@@ -5,16 +5,32 @@ import { BellIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { Avatar } from "@heroui/react";
 import usePageTitles from "@/hooks/usePageTitles";
 import { Button } from "@heroui/button";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { title, showBackBtn } = usePageTitles(pathname);
+  const [name, setName] = useState("");
 
-  const name = useMemo(() => {
-    return localStorage?.getItem("fw_wallet_full_name") ?? "";
-  }, [localStorage]);
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const syncName = () => {
+      const storedName =
+        window.localStorage?.getItem("fw_wallet_full_name") ?? "";
+      setName(storedName);
+    };
+
+    syncName();
+    window.addEventListener("storage", syncName);
+
+    return () => {
+      window.removeEventListener("storage", syncName);
+    };
+  }, []);
 
   const handleBack = () => {
     router.back(); // Navigate back

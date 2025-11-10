@@ -133,8 +133,8 @@ export default function Scan() {
       <div className="text-white p-4">
         <p>Camera access is denied. Please enable it in your iOS settings:</p>
         <ol className="list-decimal ml-4">
-          <li>Go to Settings > Safari > Camera</li>
-          <li>Set to "Ask" or "Allow"</li>
+          <li>Go to Settings &gt; Safari &gt; Camera</li>
+          <li>Set to &quot;Ask&quot; or &quot;Allow&quot;</li>
           <li>Reload the app</li>
         </ol>
       </div>

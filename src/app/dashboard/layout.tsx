@@ -24,13 +24,17 @@ export default function DashboardLayout({
 
   // check if there is an agent if there is an agent then send to home
   useLayoutEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       if (!agent && agentLoading) {
         router.push("/");
         toast.warning("Wallet is not found, please create or recover it.");
       }
     }, 1500);
-  }, []);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [agent, agentLoading, router]);
 
   return (
     <div

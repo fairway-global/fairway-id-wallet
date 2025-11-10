@@ -28,6 +28,7 @@ export default function Credentials() {
   const [activeSubTab, setActiveSubTab] = useState<"credentials" | "offers">(
     "credentials"
   ); // Added state for sub-tabs
+  const [isIdentityVerified, setIsIdentityVerified] = useState(false);
 
   // Create a mock data for demonstration purposes of credentials
   const mockCredentials = useMemo(() => {
@@ -132,12 +133,25 @@ export default function Credentials() {
     setInvitationUrl("");
   };
 
-  const isIdentityVerified = useMemo(() => {
-    const locallyVerified = localStorage?.getItem(
-      "fw_wallet_identity_verified"
-    );
-    return locallyVerified ? true : false;
-  }, [localStorage]);
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const updateVerificationState = () => {
+      const locallyVerified = window.localStorage?.getItem(
+        "fw_wallet_identity_verified"
+      );
+      setIsIdentityVerified(Boolean(locallyVerified));
+    };
+
+    updateVerificationState();
+    window.addEventListener("storage", updateVerificationState);
+
+    return () => {
+      window.removeEventListener("storage", updateVerificationState);
+    };
+  }, []);
 
   const onVerify = () => {
     router.push("/dashboard/credentials/verifyId");

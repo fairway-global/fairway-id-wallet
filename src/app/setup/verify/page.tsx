@@ -6,10 +6,12 @@ import { Input } from "@heroui/react";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
+const DEMO_SEED_PHRASES = ["word1", "word2", "word3", "word4"];
+
 const Seed = () => {
   const router = useRouter();
   // FIXME: Remove after demo
-  const phrases = ["word1", "word2", "word3", "word4"];
+  const phrases = DEMO_SEED_PHRASES;
   const [inputSeed, setInputSeed] = useState<Record<number, string>>({});
   const seedMatches: boolean = useMemo(() => {
     return phrases.every((phrase, index) => inputSeed[index] === phrase);
