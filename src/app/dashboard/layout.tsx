@@ -37,20 +37,17 @@ export default function DashboardLayout({
   }, [agent, agentLoading, router]);
 
   return (
-    <div
-      className="bg-black grid grid-rows-[64px_1fr_56px]"
-      style={{ height: "calc(var(--vh, 1vh) * 100)" }}
-    >
+    <div className="relative bg-black grid grid-rows-[64px_1fr_56px] h-full">
       <Header />
 
       {/* Dynamic Content */}
-      <main className="p-4 overflow-y-auto">{children}</main>
+      <main className="p-4 pb-28 overflow-y-auto">{children}</main>
       {/* Tabs at the Bottom */}
       <Tabs
         aria-label="Dashboard Navigation"
         selectedKey={activeTab}
         onSelectionChange={(key: Key) => handleTabChange(key as string)}
-        className="rounded-full backdrop-blur-lg bg-white/10 p-2 shadow-lg w-full fixed bottom-4 left-1/2 transform -translate-x-1/2 max-w-xl"
+        className="rounded-full backdrop-blur-lg bg-white/10 p-2 shadow-lg absolute bottom-4 left-1/2 transform -translate-x-1/2 w-[92%] max-w-sm"
         variant="solid"
         fullWidth={true}
       >

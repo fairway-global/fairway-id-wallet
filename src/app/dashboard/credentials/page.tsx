@@ -177,9 +177,15 @@ export default function Credentials() {
           ) : (
             <>
               {credentials.map((credential, key) => (
-                <IdentityCredential credential={credential} key={key} />
+                <IdentityCredential
+                  credential={credential}
+                  key={key}
+                  className="mb-3"
+                />
               ))}
-              <NationalIDBadge />
+              <div className="mb-3">
+                <NationalIDBadge />
+              </div>
               <Button
                 size="sm"
                 className={

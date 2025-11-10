@@ -1,7 +1,6 @@
 "use client";
 import "./globals.css";
 import { Toaster } from "sonner";
-import { MobileProvider } from "../context/MobileContext";
 import { Provider } from "./provider";
 import { useEffect } from "react";
 
@@ -25,9 +24,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body>
         <Toaster />
-        <MobileProvider>
-          <Provider>{children}</Provider>
-        </MobileProvider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );
