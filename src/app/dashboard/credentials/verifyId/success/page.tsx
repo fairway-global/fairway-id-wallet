@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Card, CardBody } from "@heroui/react";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import { FAYDA_LOGIN_ROUTE } from "@/constants/auth";
 
 export default function IdentityVerificationSuccess() {
   const router = useRouter();
@@ -16,8 +17,12 @@ export default function IdentityVerificationSuccess() {
     window.localStorage.setItem("fw_wallet_identity_verified", "true");
   }, []);
 
-  const handleGoToCredentials = () => {
-    router.push("/dashboard/credentials");
+  useEffect(() => {
+    router.prefetch(FAYDA_LOGIN_ROUTE);
+  }, [router]);
+
+  const handleContinue = () => {
+    router.replace(FAYDA_LOGIN_ROUTE);
   };
 
   return (
@@ -44,9 +49,9 @@ export default function IdentityVerificationSuccess() {
               fullWidth
               color="success"
               className="bg-fwNewGreen text-white"
-              onPress={handleGoToCredentials}
+              onPress={handleContinue}
             >
-              View Credentials
+              Continue to Fayda Login
             </Button>
           </div>
         </CardBody>

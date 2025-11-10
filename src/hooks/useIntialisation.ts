@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAgentStore } from "../store/agentStore";
 import { useWalletStore } from "../store/walletStore";
 import { toast } from "sonner";
+import { FAYDA_LOGIN_ROUTE, FAYDA_SESSION_KEY } from "@/constants/auth";
 
 export function useInitialization() {
   const router = useRouter();
+  const pathname = usePathname();
   const { checkWallet } = useWalletStore();
   const { agent, startAgent } = useAgentStore();
   const [isInitializing, setIsInitializing] = useState(true);
@@ -15,16 +17,31 @@ export function useInitialization() {
     const initialize = async () => {
       try {
         const { success } = await checkWallet();
-        if (success) {
-          console.log("Wallet found, starting agent...");
-          const startedAgent = await startAgent();
-          if (startedAgent?.state === "running") {
-            router.push("/dashboard"); // Navigate to dashboard on success
-          }
-        } else {
+        if (!success) {
           console.log("No wallet detected.");
-          toast.info("Please create or recover a wallet to proceed:");
-          router.push("/"); // Navigate to home if no wallet
+          if (pathname !== "/") {
+            toast.info("Please create or recover a wallet to proceed:");
+            router.replace("/");
+          }
+          return;
+        }
+
+        if (typeof window === "undefined") {
+          return;
+        }
+
+        const isLoggedIn =
+          window.localStorage.getItem(FAYDA_SESSION_KEY) === "true";
+
+        if (!isLoggedIn) {
+          router.replace(FAYDA_LOGIN_ROUTE);
+          return;
+        }
+
+        console.log("Wallet found, starting agent...");
+        const startedAgent = await startAgent();
+        if (startedAgent?.state === "running") {
+          router.replace("/dashboard/credentials"); // Navigate to dashboard on success
         }
       } catch (err) {
         console.error("Initialization error:", err);
@@ -34,7 +51,9 @@ export function useInitialization() {
             : "An error occurred during initialization";
         setError(message);
         toast.error("Initialization failed. Please try again.");
-        router.push("/"); // Navigate to home on error
+        if (pathname !== "/") {
+          router.replace("/");
+        }
       } finally {
         console.log("Initialization complete");
         setIsInitializing(false);
@@ -43,8 +62,10 @@ export function useInitialization() {
 
     if (!agent) {
       initialize();
+    } else {
+      setIsInitializing(false);
     }
-  }, [agent, checkWallet, router, startAgent]);
+  }, [agent, checkWallet, pathname, router, startAgent]);
 
   return { isInitializing, error };
 }

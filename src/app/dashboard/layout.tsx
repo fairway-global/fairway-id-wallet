@@ -1,12 +1,15 @@
 "use client";
 
-import React, { Key, useLayoutEffect } from "react";
+import React, { Key, useEffect, useLayoutEffect, useState } from "react";
 import { Tabs, Tab } from "@heroui/react";
 import { usePathname, useRouter } from "next/navigation";
 import { CameraIcon, ChartPieIcon, CogIcon } from "@heroicons/react/24/outline";
 import Header from "@/components/ui/Header";
 import { useAgentStore } from "../../store/agentStore";
 import { toast } from "sonner";
+import { config } from "@/config";
+import { FAYDA_LOGIN_ROUTE, FAYDA_SESSION_KEY } from "@/constants/auth";
+import PageLoader from "@/components/PageLoader";
 
 export default function DashboardLayout({
   children,
@@ -17,6 +20,28 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const router = useRouter();
   const activeTab = pathname.split("/").pop() || "credentials";
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    const walletExists = Boolean(
+      window.localStorage.getItem(config.LOCAL_STORAGE_NAME)
+    );
+    if (!walletExists) {
+      router.replace("/");
+      return;
+    }
+
+    const isLoggedIn =
+      window.localStorage.getItem(FAYDA_SESSION_KEY) === "true";
+    if (!isLoggedIn) {
+      router.replace(FAYDA_LOGIN_ROUTE);
+      return;
+    }
+    setIsAuthorized(true);
+  }, [router]);
 
   const handleTabChange = (key: string) => {
     router.push(`/dashboard/${key === "credentials" ? "" : key}`);
@@ -24,6 +49,9 @@ export default function DashboardLayout({
 
   // check if there is an agent if there is an agent then send to home
   useLayoutEffect(() => {
+    if (!isAuthorized) {
+      return;
+    }
     const timeout = setTimeout(() => {
       if (!agent && agentLoading) {
         router.push("/");
@@ -34,7 +62,11 @@ export default function DashboardLayout({
     return () => {
       clearTimeout(timeout);
     };
-  }, [agent, agentLoading, router]);
+  }, [agent, agentLoading, isAuthorized, router]);
+
+  if (!isAuthorized) {
+    return <PageLoader loaderText="Preparing dashboard..." />;
+  }
 
   return (
     <div className="relative bg-black grid grid-rows-[64px_1fr_56px] h-full">
