@@ -8,6 +8,7 @@ import { useWalletStore } from "../../store/walletStore";
 import { useEffect, useState } from "react";
 import { logger } from "../../utils/logger";
 import { useAgentStore } from "../../store/agentStore";
+import { FAYDA_LOGIN_ROUTE, FAYDA_SESSION_KEY } from "@/constants/auth";
 
 const Seed = () => {
   const router = useRouter();
@@ -45,11 +46,19 @@ const Seed = () => {
       await startAgent();
       logger.log(
         "UI",
-        "Wallet initialization successful, redirecting to dashboard"
+        "Wallet initialization successful, redirecting to Fayda login"
       );
-      router.push("/setup/final");
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem(FAYDA_SESSION_KEY);
+      }
+      router.replace(FAYDA_LOGIN_ROUTE);
     } catch (err) {
       logger.error("UI", "Failed to initialize wallet", err);
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Unable to initialize wallet. Check mediator connectivity and try again.";
+      toast.error(message, { position: "top-center" });
     }
   };
 

@@ -17,6 +17,8 @@ import {
   FAYDA_FAN_NUMBER_KEY,
   FAYDA_LOGIN_ROUTE,
   FAYDA_SESSION_KEY,
+  FAYDA_PROFILE_IMAGE_KEY,
+  FAYDA_PROFILE_NAME_KEY,
 } from "@/constants/auth";
 
 export default function Header() {
@@ -25,6 +27,7 @@ export default function Header() {
   const { title, showBackBtn } = usePageTitles(pathname);
   const [name, setName] = useState("");
   const [fanNumber, setFanNumber] = useState("");
+  const [avatar, setAvatar] = useState<string | undefined>(undefined);
   const { stopAgent } = useAgentStore();
 
   useEffect(() => {
@@ -34,11 +37,14 @@ export default function Header() {
 
     const syncProfile = () => {
       const storedName =
-        window.localStorage?.getItem("fw_wallet_full_name") ?? "";
+        window.localStorage?.getItem(FAYDA_PROFILE_NAME_KEY) ?? "";
       const storedFan =
         window.localStorage?.getItem(FAYDA_FAN_NUMBER_KEY) ?? "";
+      const storedAvatar =
+        window.localStorage?.getItem(FAYDA_PROFILE_IMAGE_KEY) ?? undefined;
       setName(storedName);
       setFanNumber(storedFan);
+      setAvatar(storedAvatar);
     };
 
     syncProfile();
@@ -56,10 +62,12 @@ export default function Header() {
   const handleLogout = async () => {
     try {
       if (typeof window !== "undefined") {
-        window.localStorage.removeItem(FAYDA_SESSION_KEY);
-        window.localStorage.removeItem(FAYDA_FAN_NUMBER_KEY);
-      }
-      await stopAgent();
+      window.localStorage.removeItem(FAYDA_SESSION_KEY);
+      window.localStorage.removeItem(FAYDA_FAN_NUMBER_KEY);
+      window.localStorage.removeItem(FAYDA_PROFILE_NAME_KEY);
+      window.localStorage.removeItem(FAYDA_PROFILE_IMAGE_KEY);
+    }
+    await stopAgent();
     } catch (error) {
       console.error("Failed to stop agent on logout", error);
     } finally {
@@ -71,13 +79,14 @@ export default function Header() {
     <div className="p-4 flex flex-row justify-between items-center h-16 bg-transparent text-white">
       <div className="flex gap-1">
         <Dropdown placement="bottom-start">
-          <DropdownTrigger>
-            <button className="flex gap-2 items-center rounded-full focus:outline-none">
-              <Avatar
-                size="sm"
-                src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
-                className="cursor-pointer"
-              />
+        <DropdownTrigger>
+          <button className="flex gap-2 items-center rounded-full focus:outline-none">
+            <Avatar
+              size="sm"
+              src={avatar}
+              name={name || "Fairway Pro"}
+              className="cursor-pointer"
+            />
               <p className="text-sm text-gray-200 font-medium text-left">
                 Hi, <b>{name || "Fairway Pro"}</b>
               </p>

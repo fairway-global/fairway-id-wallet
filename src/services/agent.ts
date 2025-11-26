@@ -59,13 +59,17 @@ export class AgentService {
   }
 
   async fetchMediatorDID(
-    mediatorEndpoint: string
+    mediatorEndpoint: string,
+    timeoutMs = 8000
   ): Promise<SDK.Domain.DID | null> {
     this.logger.log("Agent", `Fetching mediator DID from: ${mediatorEndpoint}`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await fetch(`${mediatorEndpoint}/did`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
       });
       if (!response.ok) {
         throw new Error(`Failed to fetch mediator DID: ${response.status}`);
@@ -81,6 +85,8 @@ export class AgentService {
       this.logger.error("Agent", "Error fetching mediator DID", err);
       this.logger.log("Agent", "No mediator DID found");
       return null;
+    } finally {
+      clearTimeout(timeout);
     }
   }
 
@@ -97,7 +103,20 @@ export class AgentService {
 
   private async buildAgentDependencies(pluto: SDK.Domain.Pluto) {
     this.logger.log("Agent", "Creating agent dependencies");
-    const mediatorDID = await this.fetchMediatorDID(MEDIATOR_URL);
+    let mediatorDID = await this.fetchMediatorDID(MEDIATOR_URL);
+    if (!mediatorDID && this.config.MEDIATOR_DID) {
+      this.logger.log(
+        "Agent",
+        "Falling back to configured mediator DID",
+        this.config.MEDIATOR_DID
+      );
+      mediatorDID = SDK.Domain.DID.fromString(this.config.MEDIATOR_DID);
+    }
+    if (!mediatorDID) {
+      throw new Error(
+        `Mediator not available. Checked ${MEDIATOR_URL} and no fallback configured.`
+      );
+    }
     const extraResolvers = [ShortFormDIDResolverSample];
     const api = new SDK.ApiImpl();
     const castor = new SDK.Castor(this.apollo, extraResolvers);

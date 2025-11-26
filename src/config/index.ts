@@ -1,7 +1,8 @@
 // Server URLs
 
 // export const CLOUD_PROXY_URL = "https://vm.fairway.global/node";
-export const MEDIATOR_URL = "https://vm.fairway.global/mediator";
+export const MEDIATOR_URL =
+  process.env.NEXT_PUBLIC_MEDIATOR_URL ?? "https://vm.fairway.global/mediator";
 export const CLOUD_AGENT_URL = "https://vm.fairway.global/agent";
 
 export const ISSUER_DID =
