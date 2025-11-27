@@ -9,6 +9,8 @@ import { useAgentStore } from "../../store/agentStore";
 import { toast } from "sonner";
 import { config } from "@/config";
 import { FAYDA_LOGIN_ROUTE, FAYDA_SESSION_KEY } from "@/constants/auth";
+
+const BYPASS_FAYDA = process.env.NEXT_PUBLIC_BYPASS_FAYDA === "true";
 import PageLoader from "@/components/PageLoader";
 
 export default function DashboardLayout({
@@ -36,7 +38,7 @@ export default function DashboardLayout({
 
     const isLoggedIn =
       window.localStorage.getItem(FAYDA_SESSION_KEY) === "true";
-    if (!isLoggedIn) {
+    if (!isLoggedIn && !BYPASS_FAYDA) {
       router.replace(FAYDA_LOGIN_ROUTE);
       return;
     }

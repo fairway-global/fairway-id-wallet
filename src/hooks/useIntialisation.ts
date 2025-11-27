@@ -5,6 +5,8 @@ import { useWalletStore } from "../store/walletStore";
 import { toast } from "sonner";
 import { FAYDA_LOGIN_ROUTE, FAYDA_SESSION_KEY } from "@/constants/auth";
 
+const BYPASS_FAYDA = process.env.NEXT_PUBLIC_BYPASS_FAYDA === "true";
+
 export function useInitialization() {
   const router = useRouter();
   const pathname = usePathname();
@@ -33,7 +35,7 @@ export function useInitialization() {
         const isLoggedIn =
           window.localStorage.getItem(FAYDA_SESSION_KEY) === "true";
 
-        if (!isLoggedIn) {
+        if (!isLoggedIn && !BYPASS_FAYDA) {
           router.replace(FAYDA_LOGIN_ROUTE);
           return;
         }
