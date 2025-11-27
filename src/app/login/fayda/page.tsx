@@ -123,29 +123,25 @@ export default function FaydaLoginPage() {
   }
 
   return (
-    <div
-      className="flex flex-col justify-center items-center px-4 text-white"
-      style={{ minHeight: "calc(var(--vh, 1vh) * 100)" }}
-    >
-      <Card className="w-full max-w-md bg-[#101428] border border-white/10 shadow-2xl">
+    <div className="flex flex-col justify-center items-center px-4 py-6 text-white h-full">
+      <Card className="w-full max-w-md bg-[#12142b] border border-white/10 shadow-2xl rounded-[28px]">
         <CardBody className="flex flex-col gap-6 p-8">
           <div className="text-center">
-            <p className="text-sm uppercase tracking-widest text-gray-400">
+            <p className="text-sm uppercase tracking-[0.2em] text-gray-400">
               Login with Fayda
             </p>
-            <h1 className="text-2xl font-bold mt-2">
+            <h1 className="text-3xl font-extrabold mt-3 leading-snug">
               Ethiopian National ID (e-Signet)
             </h1>
-            <p className="text-gray-400 text-sm mt-1">
-              Redirect to the official Fayda eSignet portal to verify your
-              national ID and share a signed proof back to this wallet.
+            <p className="text-gray-300 text-sm mt-2 leading-relaxed">
+              Redirect to the official Fayda eSignet portal to verify your national ID and share a signed proof back to this wallet.
             </p>
           </div>
           <div className="flex flex-col gap-4">
             <Button
               type="button"
               color="success"
-              className="bg-fwNewGreen text-black font-semibold"
+              className="bg-[#69e6b5] text-black font-semibold rounded-xl py-6 text-base"
               isLoading={isProcessing}
               onClick={handleStartFaydaLogin}
             >
@@ -158,8 +154,7 @@ export default function FaydaLoginPage() {
             )}
             <p className="text-xs text-gray-500 text-center">
               We request scopes:{" "}
-              <span className="font-mono">{FAYDA_SCOPE}</span>. Fayda signs the
-              response; we only store the resulting assertion.
+              <span className="font-mono">{FAYDA_SCOPE}</span>. Fayda signs the response; we only store the resulting assertion.
             </p>
           </div>
         </CardBody>
