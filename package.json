@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "debug": "node --inspect ./node_modules/.bin/next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "node node_modules/next/dist/bin/next dev",
+    "debug": "node --inspect node_modules/next/dist/bin/next dev",
+    "build": "node node_modules/next/dist/bin/next build",
+    "start": "node node_modules/next/dist/bin/next start",
+    "lint": "node node_modules/next/dist/bin/next lint",
+    "fix-swc": "npm install @next/swc-win32-x64-msvc --no-save --force",
+    "postinstall": "npm run fix-swc || echo SWC fix skipped"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

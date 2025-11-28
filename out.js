@@ -1,0 +1,20 @@
+import fs from 'fs';
+import glob from 'glob';
+
+const files = glob.sync('build/**/*.html');
+files.forEach((file) => {
+    const content = fs.readFileSync(file, 'utf-8');
+    const modifiedContent = content.replace(/\/_next/g, './next');
+    fs.writeFileSync(file, modifiedContent, 'utf-8');
+});
+
+const sourcePath = 'build/_next';
+const destinationPath = 'build/next';
+
+fs.rename(sourcePath, destinationPath, (err) => {
+    if (err) {
+        console.error('Failed to rename "_next" directory to "next".', err);
+    } else {
+        console.log('Renamed "_next" directory to "next" successfully.');
+    }
+});

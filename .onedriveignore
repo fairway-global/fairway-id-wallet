@@ -1,0 +1,14 @@
+# Ignore Node.js dependencies and build artifacts
+node_modules/
+.next/
+build/
+out/
+dist/
+*.log
+.DS_Store
+Thumbs.db
+
+# Specifically exclude Next.js SWC binaries to prevent corruption
+node_modules/@next/
+node_modules/@swc/
+

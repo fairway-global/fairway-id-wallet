@@ -1,78 +1,49 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Avatar, Button, Card, CardBody, CardHeader } from "@heroui/react";
-import axios from "axios";
 import { decodeJwt } from "jose";
+import axios from "axios";
 import { toast } from "sonner";
 
-type UserInfo = {
+type FaydaProfile = {
   name?: string;
   email?: string;
   gender?: string;
-  phone_number?: string;
   phone?: string;
   nationality?: string;
   birthdate?: string;
-  address?:
-    | {
-        zone?: string;
-        woreda?: string;
-        region?: string;
-      }
-    | string;
+  address?: string;
   picture?: string;
+  fan?: string;
   [key: string]: unknown;
 };
 
-const SESSION_KEYS = {
-  verifier: "fayda_pkce_verifier",
-};
-
-export default function Callback() {
+export default function FaydaCallbackPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [profile, setProfile] = useState<FaydaProfile | null>(null);
   const [status, setStatus] = useState<string>("Waiting for Fayda response…");
-  const hasProcessedRef = useRef(false); // Prevent duplicate requests
+  const [debugSteps, setDebugSteps] = useState<string[]>([]);
 
   const code = useMemo(() => searchParams.get("code"), [searchParams]);
   const state = useMemo(() => searchParams.get("state"), [searchParams]);
 
   useEffect(() => {
-    // Prevent duplicate processing of the same code
-    if (!code || hasProcessedRef.current) {
-      if (!code) {
-        setIsLoading(false);
-        toast.error("Missing authorization code");
-      }
+    if (!code) {
+      setIsLoading(false);
+      toast.error("Missing authorization code");
       return;
     }
 
-    hasProcessedRef.current = true;
-
     const fetchToken = async (authCode: string) => {
+      setIsLoading(true);
+      setStatus("Exchanging code for token…");
       try {
-        setIsLoading(true);
-        setStatus("Exchanging code for token…");
-
-        // Retrieve code_verifier from sessionStorage (must match the code_challenge sent in authorization request)
-        const codeVerifier =
-          typeof window !== "undefined"
-            ? sessionStorage.getItem(SESSION_KEYS.verifier)
-            : null;
-
-        if (!codeVerifier) {
-          throw new Error(
-            "Missing code_verifier. Please restart the login process."
-          );
-        }
-
         const response = await axios.post("/api/token", {
           code: authCode,
-          code_verifier: codeVerifier,
         });
 
         const { access_token } = response.data;
@@ -100,42 +71,28 @@ export default function Callback() {
         }
 
         // Store the decoded user info in state
-        setUserInfo(normalizeProfile(decodedUserInfo));
+        setProfile(normalizeProfile(decodedUserInfo));
         setStatus("Verified data received");
         toast.success("Fayda sign-in successful");
-
-        // Cleanup sessionStorage after successful authentication
-        if (typeof window !== "undefined") {
-          sessionStorage.removeItem(SESSION_KEYS.verifier);
-        }
+        setIsLoading(false);
       } catch (error: any) {
         console.error("Error fetching token or user info:", error);
-
-        // Handle specific error types
-        const errorData = error.response?.data;
-        let errorMessage = error.message || "Error fetching token or user info";
-
-        if (errorData?.error === "invalid_transaction") {
-          errorMessage =
-            "Transaction was interrupted. Please restart the login process.";
-          // Reset the ref so user can retry
-          hasProcessedRef.current = false;
-        } else if (errorData?.error) {
-          errorMessage = errorData.error_description || errorData.error;
-        }
-
+        const errorMessage =
+          error.response?.data?.error ||
+          error.message ||
+          "Error fetching token or user info";
         toast.error(errorMessage);
-        setStatus(`Error: ${errorMessage}`);
-        setUserInfo(null);
-      } finally {
         setIsLoading(false);
+        setStatus(`Error: ${errorMessage}`);
+        setProfile(null);
+        setDebugSteps((prev) => [...prev, `Error: ${errorMessage}`]);
       }
     };
 
     fetchToken(code);
   }, [code]);
 
-  const hasProfile = Boolean(userInfo && Object.keys(userInfo).length > 0);
+  const hasProfile = Boolean(profile && Object.keys(profile).length > 0);
 
   if (isLoading) {
     return (
@@ -160,8 +117,8 @@ export default function Callback() {
               isBordered
               color="success"
               size="lg"
-              src={userInfo?.picture}
-              name={userInfo?.name || "Fayda User"}
+              src={profile?.picture}
+              name={profile?.name || "Fayda User"}
             />
             <div className="flex flex-col">
               <p className="text-xs uppercase tracking-[0.25em] text-gray-300">
@@ -180,43 +137,28 @@ export default function Callback() {
             </div>
           </CardHeader>
           <CardBody className="grid gap-6 p-8 md:grid-cols-2">
-            <InfoRow label="Name" value={userInfo?.name} />
-            <InfoRow label="Email" value={userInfo?.email} />
-            <InfoRow label="Gender" value={userInfo?.gender} />
-            <InfoRow
-              label="Phone"
-              value={userInfo?.phone_number || userInfo?.phone}
-            />
-            <InfoRow label="Nationality" value={userInfo?.nationality} />
+            <InfoRow label="Name" value={profile?.name} />
+            <InfoRow label="Email" value={profile?.email} />
+            <InfoRow label="Gender" value={profile?.gender} />
+            <InfoRow label="Phone" value={profile?.phone} />
+            <InfoRow label="Nationality" value={profile?.nationality} />
             <InfoRow
               label="Date of Birth"
               value={
-                userInfo?.birthdate
-                  ? userInfo.birthdate.replace(/-/g, "/")
+                profile?.birthdate
+                  ? profile.birthdate.replace(/-/g, "/")
                   : undefined
               }
             />
             <InfoRow
               label="Address"
-              value={
-                typeof userInfo?.address === "string"
-                  ? userInfo.address
-                  : userInfo?.address && typeof userInfo.address === "object"
-                  ? [
-                      userInfo.address.zone,
-                      userInfo.address.woreda,
-                      userInfo.address.region,
-                    ]
-                      .filter(Boolean)
-                      .join(", ") || undefined
-                  : undefined
-              }
+              value={profile?.address}
               span="md:col-span-2"
             />
-            {userInfo?.picture && (
+            {profile?.picture && (
               <div className="md:col-span-2 flex justify-center">
                 <img
-                  src={userInfo.picture}
+                  src={profile.picture}
                   alt="Fayda portrait"
                   className="rounded-2xl border border-white/10 shadow-lg max-h-64 object-cover"
                 />
@@ -239,6 +181,18 @@ export default function Callback() {
               Go to Wallet
             </Button>
           </div>
+          {debugSteps.length > 0 && (
+            <div className="border-t border-white/10 px-8 py-6">
+              <p className="text-xs uppercase tracking-[0.2em] text-gray-400 mb-2">
+                Debug
+              </p>
+              <pre className="text-xs bg-black/30 rounded-xl p-3 text-gray-200 whitespace-pre-wrap">
+                {debugSteps
+                  .map((step, idx) => `${idx + 1}. ${step}`)
+                  .join("\n")}
+              </pre>
+            </div>
+          )}
         </Card>
       ) : (
         <Card className="w-full max-w-2xl bg-white/5 border border-red-400/40 shadow-2xl">
@@ -279,6 +233,18 @@ export default function Callback() {
               </Button>
             </div>
           </CardBody>
+          {debugSteps.length > 0 && (
+            <div className="border-t border-white/10 px-8 py-6">
+              <p className="text-xs uppercase tracking-[0.2em] text-gray-400 mb-2">
+                Debug
+              </p>
+              <pre className="text-xs bg-black/30 rounded-xl p-3 text-gray-200 whitespace-pre-wrap">
+                {debugSteps
+                  .map((step, idx) => `${idx + 1}. ${step}`)
+                  .join("\n")}
+              </pre>
+            </div>
+          )}
         </Card>
       )}
     </div>
@@ -287,28 +253,28 @@ export default function Callback() {
 
 const decodeUserInfoResponse = async (
   userinfoJwtToken: unknown
-): Promise<UserInfo> => {
+): Promise<FaydaProfile> => {
   try {
     if (!userinfoJwtToken) return {};
 
     // Handle string JWT token
     if (typeof userinfoJwtToken === "string") {
-      return decodeJwt(userinfoJwtToken) as UserInfo;
+      return decodeJwt(userinfoJwtToken) as FaydaProfile;
     }
 
     // Handle object with userinfo property
     const candidate = (userinfoJwtToken as any).userinfo ?? userinfoJwtToken;
 
     if (typeof candidate === "string") {
-      return decodeJwt(candidate) as UserInfo;
+      return decodeJwt(candidate) as FaydaProfile;
     }
 
     if ((candidate as any).id_token) {
-      return decodeJwt((candidate as any).id_token) as UserInfo;
+      return decodeJwt((candidate as any).id_token) as FaydaProfile;
     }
 
     if (typeof candidate === "object") {
-      return candidate as UserInfo;
+      return candidate as FaydaProfile;
     }
 
     return {};
@@ -339,10 +305,10 @@ function InfoRow({ label, value, span }: InfoRowProps) {
   );
 }
 
-function normalizeProfile(profile: UserInfo): UserInfo {
+function normalizeProfile(profile: FaydaProfile): FaydaProfile {
   if (!profile) return {};
 
-  const normalized: UserInfo = { ...profile };
+  const normalized: FaydaProfile = { ...profile };
 
   // Normalize common alternate keys
   const anyProfile = profile as any;
@@ -352,17 +318,14 @@ function normalizeProfile(profile: UserInfo): UserInfo {
   normalized.birthdate =
     profile.birthdate ?? anyProfile.birth_date ?? anyProfile.dob;
   normalized.address =
-    typeof profile.address === "string"
-      ? profile.address
-      : profile.address && typeof profile.address === "object"
-      ? profile.address
-      : typeof anyProfile.address === "string"
-      ? anyProfile.address
-      : [anyProfile.city, anyProfile.state, anyProfile.country]
-          .filter(Boolean)
-          .join(", ") || undefined;
+    profile.address ??
+    [anyProfile.city, anyProfile.state, anyProfile.country]
+      .filter(Boolean)
+      .join(", ");
   normalized.picture = profile.picture ?? anyProfile.photo ?? anyProfile.avatar;
   normalized.name = profile.name ?? anyProfile.fullname ?? anyProfile.full_name;
+  normalized.fan =
+    profile.fan ?? anyProfile.fanNumber ?? anyProfile.faydaId ?? anyProfile.sub;
 
   return normalized;
 }
