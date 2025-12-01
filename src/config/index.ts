@@ -1,9 +1,12 @@
 // Server URLs
 
 // export const CLOUD_PROXY_URL = "https://vm.fairway.global/node";
-export const MEDIATOR_URL =
-  process.env.NEXT_PUBLIC_MEDIATOR_URL ?? "https://vm.fairway.global/mediator";
+// export const MEDIATOR_URL =
+//   process.env.NEXT_PUBLIC_MEDIATOR_URL ?? "https://vm.fairway.global/mediator";
 export const CLOUD_AGENT_URL = "https://vm.fairway.global/agent";
+export const MEDIATOR_MESSAGE_URL =
+  process.env.NEXT_PUBLIC_MEDIATOR_MESSAGE_URL ??
+  "https://vm.fairway.global/mediator/didcomm";
 
 export const ISSUER_DID =
   "did:prism:48c252d32b349f70794f518d6aa412525018b3ac3f2a78bbc5107a49abf183bc";
@@ -38,8 +41,21 @@ export const STORAGE_KEYS = {
   AGENT: "fairway-agent",
 };
 
+// Add fallback mediator DID
+export const MEDIATOR_URL =
+  process.env.NEXT_PUBLIC_MEDIATOR_URL ?? "https://vm.fairway.global/mediator";
+
+// Add a hardcoded fallback mediator DID (you should get this from your mediator when it's online)
+// NEW - Remove hardcoded fallback, only use env var if set
+export const FALLBACK_MEDIATOR_DID =
+  process.env.NEXT_PUBLIC_FALLBACK_MEDIATOR_DID ?? null;
+
 export const APP_VERSION = "1.0.0";
 export const config = {
+  MEDIATOR_DID:
+    process.env.NEXT_PUBLIC_MEDIATOR_DID ||
+    process.env.REACT_APP_MEDIATOR_DID ||
+    FALLBACK_MEDIATOR_DID, // Use fallback if env var not set
   ENV: process.env.REACT_APP_ENV || "development",
   DEBUG: process.env.REACT_APP_DEBUG === "true" ? true : false,
   SECRET_KEY: process.env.REACT_APP_SECRET_KEY || "BETAMWESANMISTIR",
@@ -47,7 +63,7 @@ export const config = {
     parseInt(process.env.REACT_APP_PLUTO_PASSWD || "0") || 0
   ),
   PLUTO_DB_NAME: process.env.REACT_APP_PLUTO_DB_NAME,
-  MEDIATOR_DID: process.env.REACT_APP_MEDIATOR_DID || "did:example:mediator",
+  // MEDIATOR_DID: process.env.REACT_APP_MEDIATOR_DID || "did:example:mediator",
   ISSUER_AGENT: process.env.REACT_APP_ISSUER_AGENT,
   BACKUP_AGENT: process.env.REACT_APP_BACKUP_AGENT,
   BACKUP_AGENT_API_KEY: process.env.REACT_APP_BACKUP_AGENT_API_KEY,

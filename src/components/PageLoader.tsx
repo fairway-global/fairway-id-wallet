@@ -4,9 +4,25 @@ import { Spinner } from "@heroui/react";
 
 interface IPageLoader {
   loaderText?: string;
+  showProgress?: boolean;
 }
 
-const PageLoader: React.FC<IPageLoader> = ({ loaderText = "" }) => {
+const PageLoader: React.FC<IPageLoader> = ({
+  loaderText = "",
+  showProgress = false,
+}) => {
+  const [dots, setDots] = React.useState("");
+
+  React.useEffect(() => {
+    if (!showProgress) return;
+
+    const interval = setInterval(() => {
+      setDots((prev) => (prev.length >= 3 ? "" : prev + "."));
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [showProgress]);
+
   return (
     <div
       className="flex flex-col items-center min-h-[95vh] justify-center bg-gray-900"
@@ -24,7 +40,13 @@ const PageLoader: React.FC<IPageLoader> = ({ loaderText = "" }) => {
         />
       </div>
       <Spinner color="success" size="lg" />
-      <p className="text-gray-100 mt-4">{loaderText}</p>
+      <p className="text-gray-100 mt-4">
+        {loaderText}
+        {showProgress && dots}
+      </p>
+      <p className="text-gray-400 text-sm mt-2">
+        This may take a few moments...
+      </p>
     </div>
   );
 };

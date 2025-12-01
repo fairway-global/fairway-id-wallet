@@ -1,7 +1,49 @@
 import SDK from "@hyperledger/identus-edge-agent-sdk";
 import { ShortFormDIDResolverSample } from "@/utils/index";
-import { config, MEDIATOR_URL } from "@/config";
+import { config, MEDIATOR_URL, MEDIATOR_MESSAGE_URL } from "@/config";
 import { connectPluto } from "./pluto";
+
+// Minimal mediator-aware API: reroute mediator traffic to the actual DIDComm handler
+// and retry with /didcomm when the root endpoint returns 408/403/404.
+class MediatorApi extends SDK.ApiImpl {
+  async request<T>(
+    method: SDK.Domain.HttpMethod,
+    urlStr: string,
+    urlParameters: Map<string, string> = new Map<string, string>(),
+    httpHeaders: Map<string, string> = new Map<string, string>(),
+    body?: string | Record<string, unknown>
+  ): Promise<SDK.Domain.ApiResponse<T>> {
+    const isMediatorRequest = urlStr.startsWith(MEDIATOR_URL);
+    const primaryUrl =
+      isMediatorRequest && MEDIATOR_MESSAGE_URL ? MEDIATOR_MESSAGE_URL : urlStr;
+
+    try {
+      return await super.request<T>(
+        method,
+        primaryUrl,
+        urlParameters,
+        httpHeaders,
+        body
+      );
+    } catch (err: any) {
+      const shouldRetry =
+        isMediatorRequest &&
+        (err?.status === 408 || err?.status === 403 || err?.status === 404);
+      if (!shouldRetry) throw err;
+
+      const fallbackUrl = primaryUrl.endsWith("/")
+        ? `${primaryUrl}didcomm`
+        : `${primaryUrl}/didcomm`;
+      return super.request<T>(
+        method,
+        fallbackUrl,
+        urlParameters,
+        httpHeaders,
+        body
+      );
+    }
+  }
+}
 
 export class AgentService {
   private apollo: SDK.Apollo;
@@ -34,7 +76,14 @@ export class AgentService {
       if (!this.pluto) {
         await this.initializePluto(forceNew);
       }
-      const agentDependencies = await this.buildAgentDependencies(this.pluto!);
+      let agentDependencies;
+      try {
+        agentDependencies = await this.buildAgentDependencies(this.pluto!);
+      } catch (err) {
+        this.logger.error("Agent", "Failed to build agent dependencies", err);
+        throw err;
+      }
+
       const mediator = agentDependencies.mediatorDID;
       if (!mediator) {
         throw new Error("Mediator not available");
@@ -118,7 +167,7 @@ export class AgentService {
       );
     }
     const extraResolvers = [ShortFormDIDResolverSample];
-    const api = new SDK.ApiImpl();
+    const api = new MediatorApi();
     const castor = new SDK.Castor(this.apollo, extraResolvers);
     const didcomm = new SDK.DIDCommWrapper(this.apollo, castor, pluto);
     const mercury = new SDK.Mercury(castor, didcomm, api);
