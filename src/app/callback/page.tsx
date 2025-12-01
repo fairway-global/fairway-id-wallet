@@ -100,13 +100,39 @@ export default function Callback() {
         }
 
         // Store the decoded user info in state
-        setUserInfo(normalizeProfile(decodedUserInfo));
+        const normalized = normalizeProfile(decodedUserInfo);
+        setUserInfo(normalized);
         setStatus("Verified data received");
         toast.success("Fayda sign-in successful");
 
-        // Cleanup sessionStorage after successful authentication
+        // Set Fayda session in localStorage for authentication
         if (typeof window !== "undefined") {
+          window.localStorage.setItem("fw_fayda_session", "true");
+
+          // Mark identity as verified after successful Fayda login
+          window.localStorage.setItem("fw_wallet_identity_verified", "true");
+
+          // Store user profile data if available
+          if (normalized.name) {
+            window.localStorage.setItem("fw_wallet_full_name", normalized.name);
+          }
+          if (normalized.picture) {
+            window.localStorage.setItem("fw_wallet_avatar", normalized.picture);
+          }
+          if (normalized.sub || (normalized as any).fan) {
+            window.localStorage.setItem(
+              "fw_fayda_fan",
+              String(normalized.sub || (normalized as any).fan || "")
+            );
+          }
+
+          // Cleanup sessionStorage after successful authentication
           sessionStorage.removeItem(SESSION_KEYS.verifier);
+
+          // Auto-redirect to dashboard after a short delay
+          setTimeout(() => {
+            router.replace("/dashboard/credentials");
+          }, 1500);
         }
       } catch (error: any) {
         console.error("Error fetching token or user info:", error);
@@ -133,7 +159,7 @@ export default function Callback() {
     };
 
     fetchToken(code);
-  }, [code]);
+  }, [code, router]);
 
   const hasProfile = Boolean(userInfo && Object.keys(userInfo).length > 0);
 
@@ -234,7 +260,7 @@ export default function Callback() {
             <Button
               color="success"
               className="bg-fwNewGreen text-black font-semibold"
-              onClick={() => router.push("/dashboard")}
+              onClick={() => router.replace("/dashboard/credentials")}
             >
               Go to Wallet
             </Button>
