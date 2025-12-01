@@ -1,40 +1,58 @@
 import { NextResponse } from "next/server";
-
-const UPSTREAM_BASE =
-  process.env.FAYDA_UPSTREAM_BASE ?? "http://localhost:3000/api";
+import axios from "axios";
 
 export async function POST(request: Request) {
   try {
-    const { access_token: accessToken } = await request.json();
+    const payload = await request.json();
+    const { access_token } = payload;
 
-    if (!accessToken) {
+    if (!access_token) {
       return NextResponse.json(
         { error: "Missing access token" },
         { status: 400 }
       );
     }
 
-    const upstreamUrl = `${UPSTREAM_BASE.replace(/\/$/, "")}/userinfo/`;
-    const response = await fetch(upstreamUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ access_token: accessToken }),
-    });
+    const userinfoEndpoint = process.env.NEXT_APP_USERINFO_ENDPOINT;
 
-    const data = await response
-      .json()
-      .catch(() => ({ error: "Invalid JSON from upstream" }));
-
-    if (!response.ok) {
-      return NextResponse.json(data, { status: response.status });
+    if (!userinfoEndpoint) {
+      console.error("Missing NEXT_APP_USERINFO_ENDPOINT environment variable");
+      return NextResponse.json(
+        {
+          error: "Configuration error",
+          error_description:
+            "Missing NEXT_APP_USERINFO_ENDPOINT environment variable",
+        },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json(data);
-  } catch (error) {
-    console.error("Userinfo proxy failed", error);
+    const response = await axios.get(userinfoEndpoint, {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+
+    return NextResponse.json(response.data);
+  } catch (error: any) {
+    console.error(
+      "Userinfo request error:",
+      error.response?.data || error.message
+    );
+
+    // If axios got an error response, forward it
+    if (error.response?.data) {
+      return NextResponse.json(
+        {
+          error: "Userinfo request failed",
+          error_description:
+            error.response.data.error_description || error.message,
+        },
+        { status: error.response.status || 500 }
+      );
+    }
+
     return NextResponse.json(
-      { error: "Unable to reach Fayda userinfo service" },
-      { status: 502 }
+      { error: "Userinfo request failed", error_description: error.message },
+      { status: 500 }
     );
   }
 }
