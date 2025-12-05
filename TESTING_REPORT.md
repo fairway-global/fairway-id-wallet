@@ -363,9 +363,9 @@ This document provides a comprehensive testing report for the Fairway ID Wallet 
 
 ### Deployment Evidence
 
-- **Live Deployment:** [Deployment URL]
-- **GitHub Repository:** [Repository URL]
-- **Demo Videos:** [Video Links]
+- **Live Deployment:** [https://wallet.fairway.global/]
+- **GitHub Repository:** [https://github.com/fairway-global/fairway-id-wallet]
+- **Demo Videos:** [https://drive.google.com/file/d/1iovGHqvLlonz_bKLKKdKN0qID3d5XaKW/view]
 - **Documentation:** README.md, Integration docs
 
 ---
