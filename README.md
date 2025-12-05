@@ -232,10 +232,16 @@ Visit http://localhost:3000 in your browser.
 🚀 Capacitor-Ready – Extend to native mobile apps easily.<br>
 🔄 Interoperable – Built to connect with the growing identity ecosystem.<br>
 
+## 📋 Testing Documentation
+
+Comprehensive testing documentation is available for Milestone 2 delivery:
+
+📄 [Testing Report](TESTING_REPORT.md) - Complete test cases, results, and testing environment details covering all components including Fayda integration, wallet core functionality, UI components, API routes, and security features.
+
 ## 📖 Learn More
 
 📘 Full Documentation: https://fairway.gitbook.io/docs<br>
 🌐 Fairway Official Site: https://fairway.global<br>
-💡 Let’s Shape the Future of Decentralized Identity!<br>
+💡 Let's Shape the Future of Decentralized Identity!<br>
 
 Fairway ID Wallet is proudly open source and built with ❤️ by the Fairway team. Whether you're contributing code, reporting issues, or sharing ideas, you're welcome to join the mission.
